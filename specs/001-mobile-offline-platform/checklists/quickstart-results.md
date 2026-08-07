@@ -4,10 +4,9 @@
 **Fecha del registro**: 2026-08-07  
 **Entorno**: workspace local de Codex, Node.js 24
 
-Este registro solo recoge evidencia automatizada ejecutada o pruebas automatizadas descubiertas.
-Un test listado con `--list` se considera pendiente hasta que se ejecute en CI o en un entorno local
-con los navegadores de Playwright disponibles. No se han realizado pruebas en dispositivos fisicos
-ni se han medido tiempos de apertura.
+Este registro recoge la evidencia automatizada ejecutada localmente y en CI. No se realizaron
+mediciones en dispositivos fisicos ni tiempos de apertura; esa desviacion fue aceptada expresamente
+por el propietario para el cierre de T053.
 
 ## Resumen
 
@@ -49,19 +48,17 @@ Resultado inicial: 32 casos descubiertos. Posteriormente, el job E2E completo ej
 
 ## Escenario A: primera carga y reapertura offline
 
-**Estado: Automatizacion superada; evidencia fisica pendiente.**
+**Estado: Automatizacion superada; evidencia fisica NO MEDIDO por desviacion aceptada.**
 
 - `offlineLifecycle.test.ts` confirma que la aplicacion solo publica `offline-ready` despues de la
   preparacion y que los cambios de conectividad no interrumpen un estado ya preparado.
 - `tests/e2e/offline.spec.ts` contiene el caso `reloads a prepared production build with no network`
   y el control de precache del shell, JavaScript y CSS.
-- La ejecucion E2E queda pendiente de CI. El navegador local no pudo iniciarse por dependencias de
-  sistema ausentes (`libnspr4.so`) y la instalacion de dependencias requiere privilegios no
-  disponibles en este entorno.
-- El objetivo de apertura inferior a 3 segundos queda pendiente de un dispositivo representativo;
-  no se registra ningun tiempo simulado.
+- El recorrido E2E offline se ejecuto correctamente en CI sobre Chromium y WebKit.
+- El objetivo de apertura inferior a 3 segundos queda `NO MEDIDO`; no se registra ningun tiempo
+  simulado y el propietario acepto esta desviacion.
 
-Comando pendiente:
+Comando ejecutado en CI:
 
 ```bash
 npx playwright test tests/e2e/offline.spec.ts --project=chromium-pwa
@@ -69,15 +66,14 @@ npx playwright test tests/e2e/offline.spec.ts --project=chromium-pwa
 
 ## Escenario B: primera carga interrumpida
 
-**Estado: Automatizacion superada; evidencia fisica pendiente.**
+**Estado: Automatizacion superada; evidencia fisica NO MEDIDO por desviacion aceptada.**
 
 - `offlineLifecycle.test.ts` verifica la transicion a preparacion requerida y el reintento seguro.
 - `tests/e2e/offline.spec.ts` contiene `explains an interrupted first preparation and retries when
   connectivity returns`, que aborta la descarga del service worker y comprueba mensaje y accion.
-- La ejecucion del recorrido de navegador queda pendiente por la misma limitacion local del
-  escenario A y porque CI aun no se ha ejecutado sobre este worktree.
+- El recorrido de navegador se ejecuto correctamente en CI.
 
-Comando pendiente:
+Comando ejecutado en CI:
 
 ```bash
 npx playwright test tests/e2e/offline.spec.ts \
@@ -87,7 +83,7 @@ npx playwright test tests/e2e/offline.spec.ts \
 
 ## Escenario C: recuperacion atomica
 
-**Estado: Automatizacion superada; evidencia fisica pendiente.**
+**Estado: Automatizacion superada; evidencia fisica NO MEDIDO por desviacion aceptada.**
 
 - `persistenceGateway.spec.ts` verifica conflicto de revision, conservacion del snapshot confirmado
   ante un commit invalido, permiso de escritura y borrado confirmado.
@@ -98,7 +94,7 @@ npx playwright test tests/e2e/offline.spec.ts \
   espacio, indisponibilidad, eliminacion externa y borrado confirmado.
 - Los contratos Vitest y los casos Playwright pasaron en CI.
 
-Comando pendiente:
+Comando ejecutado en CI:
 
 ```bash
 npx playwright test tests/e2e/recovery.spec.ts --project=chromium-pwa
@@ -106,15 +102,15 @@ npx playwright test tests/e2e/recovery.spec.ts --project=chromium-pwa
 
 ## Escenario D: actualizacion segura
 
-**Estado: Automatizacion superada; evidencia fisica pendiente.**
+**Estado: Automatizacion superada; evidencia fisica NO MEDIDO por desviacion aceptada.**
 
 - `updateCoordinator.test.ts` verifica aplazamiento durante partida activa, guard duradero,
   activacion unica, reintento y ausencia de filtrado del error tecnico.
 - `tests/e2e/update.spec.ts` contiene una descarga de B interrumpida y un recorrido A/B que pospone
   la activacion hasta el punto seguro y comprueba la persistencia.
-- El contrato Vitest paso; la prueba de dos builds y dos service workers queda pendiente de CI.
+- El contrato Vitest y la prueba E2E de dos builds y dos service workers pasaron en CI.
 
-Comando pendiente:
+Comando ejecutado en CI:
 
 ```bash
 npx playwright test tests/e2e/update.spec.ts --project=chromium-pwa
@@ -122,15 +118,15 @@ npx playwright test tests/e2e/update.spec.ts --project=chromium-pwa
 
 ## Escenario E: varias pestanas
 
-**Estado: Automatizacion superada; evidencia fisica pendiente.**
+**Estado: Automatizacion superada; evidencia fisica NO MEDIDO por desviacion aceptada.**
 
 - `writerCoordination.spec.ts` paso sus cinco contratos: un unico writer, observer durante heartbeat,
   handoff tras release, toma de control solo despues de caducidad demostrada y degradacion al perder
   la propiedad.
 - La evidencia usa dos coordinadores contra un store compartido determinista. No sustituye una
   prueba Playwright con dos paginas del mismo origen.
-- No existe todavia un recorrido E2E multi-ventana, por lo que la validacion manual del quickstart
-  permanece pendiente.
+- No existe un recorrido E2E multi-ventana; el contrato determinista esta superado y la validacion
+  manual queda `NO MEDIDO` bajo la desviacion aceptada.
 
 Comando ejecutado para el contrato:
 
@@ -140,7 +136,6 @@ npx vitest run tests/integration/writerCoordination.spec.ts
 
 ## Matriz de dispositivos
 
-Toda la matriz de iPhone/Safari y Android/Chrome permanece **pendiente**. No se han ejecutado pruebas
-fisicas ni registrado modelo, version del sistema, version del navegador, instalacion desde icono o
-duracion de apertura. Esos datos deben completarse con dispositivos reales; no se infieren de los
-proyectos emulados de Playwright.
+La matriz de iPhone/Safari y Android/Chrome queda **NO MEDIDO**. No se ejecutaron pruebas fisicas
+ni se registraron modelo, versiones, instalacion desde icono o duracion de apertura. La omision esta
+documentada y aceptada como desviacion de T053; esos datos no se infieren de Playwright.
