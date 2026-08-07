@@ -14,7 +14,12 @@ export async function activateRegisteredUpdate(): Promise<void> {
   if (reloadRequested) return
   reloadRequested = true
   try {
+    const controllerChanged = new Promise<void>((resolve) => {
+      navigator.serviceWorker.addEventListener('controllerchange', () => resolve(), { once: true })
+    })
     await activateUpdate()
+    await controllerChanged
+    window.location.reload()
   } catch (error) {
     reloadRequested = false
     throw error
@@ -34,6 +39,7 @@ export function registerAppServiceWorker(
     immediate: true,
     onOfflineReady: callbacks.onOfflineReady,
     onNeedRefresh: callbacks.onUpdateAvailable,
+    onNeedReload: () => undefined,
     onRegisterError: callbacks.onRegistrationError,
     onRegisteredSW: (_url, swRegistration) => {
       registration = swRegistration
