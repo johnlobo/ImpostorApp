@@ -63,6 +63,7 @@ export type PublicErrorCode =
   | 'migration-failed'
   | 'revision-conflict'
   | 'writer-unavailable'
+  | 'content-exhausted'
   | 'update-failed'
   | 'unknown-storage-error'
 

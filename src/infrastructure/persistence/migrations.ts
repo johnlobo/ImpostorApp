@@ -18,4 +18,16 @@ export const persistenceMigrations: readonly PersistenceMigration[] = [
       preferences: '&key',
     },
   },
+  {
+    version: 2,
+    stores: {
+      metadata: '&id',
+      recoverySnapshots: '&id, revision',
+      'player-groups': '&key',
+      'custom-categories': '&key',
+      'used-concepts': '&key',
+      preferences: '&key',
+      'role-assignment-history': '&key',
+    },
+  },
 ]

@@ -8,6 +8,7 @@ test-results/
 .env
 .env.*
 !.env.example
+JIRA_TOKEN.env
 .DS_Store
 Thumbs.db
 *.tmp

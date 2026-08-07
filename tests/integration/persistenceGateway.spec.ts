@@ -41,6 +41,7 @@ describe('PersistenceGateway contract', () => {
 
     await expect(gateway.initialize()).resolves.toEqual({ ok: true, value: 'ready' })
     await expect(gateway.loadRecoverySnapshot()).resolves.toEqual({ ok: true, value: null })
+    await expect(database.table('role-assignment-history').toArray()).resolves.toEqual([])
 
     database.close()
   })
@@ -131,6 +132,10 @@ describe('PersistenceGateway contract', () => {
 
     await gateway.initialize()
     await gateway.commitRecoverySnapshot(0, snapshot)
+    await database.table('role-assignment-history').put({
+      key: 'game-1',
+      value: { scopeId: 'game-1', secret: 'must-be-cleared' },
+    })
 
     // @ts-expect-error Confirmation must be the literal true at the public boundary.
     await expect(gateway.clearAllData({ confirmed: false })).resolves.toMatchObject({ ok: false })
@@ -141,6 +146,7 @@ describe('PersistenceGateway contract', () => {
       value: undefined,
     })
     await expect(gateway.loadRecoverySnapshot()).resolves.toEqual({ ok: true, value: null })
+    await expect(database.table('role-assignment-history').toArray()).resolves.toEqual([])
 
     database.close()
   })

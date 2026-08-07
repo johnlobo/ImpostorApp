@@ -44,7 +44,7 @@ test.describe('content catalog', () => {
     await expect(page.getByRole('heading', { name: 'Revisar selección' })).toBeVisible()
     await expect(page.getByText('Una categoría aleatoria por ronda')).toBeVisible()
     await page.getByRole('button', { name: 'Confirmar contenido' }).click()
-    await expect(page.getByRole('heading', { name: 'Contenido preparado' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Reparte los roles' })).toBeVisible()
   })
 
   test('requires explicit confirmation before enabling adult content', async ({ page }) => {
@@ -77,21 +77,13 @@ test.describe('content catalog', () => {
     await expect(page.getByText(/^Sobremesa, 3 conceptos$/)).toBeVisible()
   })
 
-  test('blocks on exhaustion and resumes after a confirmed history reset', async ({ page }) => {
+  test('hands a single eligible custom concept to the secret round', async ({ page }) => {
     await openCatalog(page, 1)
     await createCategory(page, 'Ronda única', 'Único concepto')
     await selectOnlyCategory(page, 'Ronda única')
     await page.getByRole('button', { name: 'Revisar selección' }).click()
     await page.getByRole('button', { name: 'Confirmar contenido' }).click()
-
-    await page.getByRole('button', { name: 'Extraer concepto' }).click()
-    await expect(page.getByText('Concepto reservado correctamente.')).toBeVisible()
-    await page.getByRole('button', { name: 'Extraer concepto' }).click()
-    await expect(page.getByRole('alert')).toContainText('Se han agotado los conceptos')
-
-    page.once('dialog', (dialog) => dialog.accept())
-    await page.getByRole('button', { name: 'Reiniciar historial' }).click()
-    await page.getByRole('button', { name: 'Extraer concepto' }).click()
-    await expect(page.getByText('Concepto reservado correctamente.')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Reparte los roles' })).toBeVisible()
+    await expect(page.getByLabel('Progreso de revelación')).toHaveText('0 de 3')
   })
 })

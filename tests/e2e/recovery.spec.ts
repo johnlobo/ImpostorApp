@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 const databaseName = 'impostorapp-platform'
-const databaseVersion = 10
+const databaseVersion = 20
 const recoveryStore = 'recoverySnapshots'
 
 interface SnapshotFixture {
@@ -59,6 +59,7 @@ async function seedSnapshot(page: Page, value: SnapshotFixture): Promise<void> {
             'custom-categories',
             'used-concepts',
             'preferences',
+            'role-assignment-history',
           ]) {
             if (!database.objectStoreNames.contains(collection)) {
               database.createObjectStore(collection, { keyPath: 'key' })
@@ -168,6 +169,19 @@ test.describe('durable recovery', () => {
 
     await expectRecoveredRevision(page, 3)
     await expect(page.getByTestId('recovery-snapshot')).toHaveAttribute('data-phase', 'clues')
+  })
+
+  test('blocks all game mutations when a secret-round snapshot is incompatible', async ({
+    page,
+  }) => {
+    await seedSnapshot(page, snapshot(5, 'round-prepared'))
+    await page.reload()
+
+    await expect(page.getByRole('heading', { name: 'Modo seguro de solo lectura' })).toBeVisible()
+    await expect(
+      page.getByText('Estos datos pertenecen a una versión no compatible.'),
+    ).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Jugadores' })).not.toBeVisible()
   })
 
   test('reports storage-full without replacing existing data', async ({ page }) => {

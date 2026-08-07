@@ -40,6 +40,17 @@ afterEach(async () => {
 })
 
 describe('persistence migrations', () => {
+  it('creates the additive role-assignment history store at schema version 2', async () => {
+    const name = uniqueDatabaseName()
+    const database = createPersistenceDatabase({ name, indexedDB, IDBKeyRange })
+
+    await expect(database.initialize()).resolves.toEqual({ ok: true, value: 'ready' })
+    expect((await database.open()).tables.map(({ name }) => name)).toContain(
+      'role-assignment-history',
+    )
+    database.close()
+  })
+
   it('rolls back every transformed record when a migration fails', async () => {
     const name = uniqueDatabaseName()
     await seedVersionOne(name, 'original')

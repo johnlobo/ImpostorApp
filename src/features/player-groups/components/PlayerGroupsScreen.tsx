@@ -43,6 +43,7 @@ const storageKeys: Record<PublicPlatformError['code'], Parameters<typeof transla
   'migration-failed': 'recovery.migrationFailed',
   'revision-conflict': 'groups.error.conflict',
   'writer-unavailable': 'platform.writerUnavailable',
+  'content-exhausted': 'groups.error.storage',
   'update-failed': 'platform.updateFailed',
   'unknown-storage-error': 'groups.error.storage',
 }

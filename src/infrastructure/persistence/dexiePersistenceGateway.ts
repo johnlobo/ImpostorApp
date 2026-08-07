@@ -144,6 +144,7 @@ export class DexiePersistenceGateway implements PersistenceGateway {
       'custom-categories',
       'used-concepts',
       'preferences',
+      'role-assignment-history',
     ] as const
     try {
       await this.database.transaction(tables, async () => {
