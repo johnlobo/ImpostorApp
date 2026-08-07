@@ -15,6 +15,7 @@ export class BrowserWriterLeaseStore implements WriterLeaseStore {
   }
 
   claim(candidate: StoredWriterLease, expiredBefore: number): Promise<boolean> {
+    if (!navigator.locks) return Promise.resolve(false)
     return this.exclusive(async () => {
       const current = await this.read()
       if (
@@ -30,6 +31,7 @@ export class BrowserWriterLeaseStore implements WriterLeaseStore {
   }
 
   renew(instanceId: string, heartbeatAt: number): Promise<boolean> {
+    if (!navigator.locks) return Promise.resolve(false)
     return this.exclusive(async () => {
       const current = await this.read()
       if (!current || current.instanceId !== instanceId) return false
@@ -45,7 +47,6 @@ export class BrowserWriterLeaseStore implements WriterLeaseStore {
   }
 
   private exclusive<T>(operation: () => Promise<T>): Promise<T> {
-    if (!navigator.locks) return operation()
     return navigator.locks.request(lockName, async () => await operation()) as Promise<T>
   }
 }

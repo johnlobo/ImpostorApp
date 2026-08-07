@@ -125,6 +125,11 @@ export class PersistenceDatabase {
     this.nativeDatabase = null
   }
 
+  async deleteDatabase(): Promise<void> {
+    this.close()
+    await this.dexie.delete()
+  }
+
   table<T = unknown>(name: string): PersistenceTable<T> {
     if (this.mode === 'safe-read-only') {
       if (!this.nativeDatabase) {

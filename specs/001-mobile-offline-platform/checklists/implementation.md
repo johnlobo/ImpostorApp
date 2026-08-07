@@ -16,9 +16,9 @@ quality gates y E2E terminen correctamente en CI y se registre la evidencia manu
 | `npm run format:check` | Superado localmente | Prettier valido el worktree consolidado. |
 | `npm run lint` | Superado localmente | ESLint valido el worktree consolidado sin incidencias. |
 | `npm run typecheck` | Superado localmente | TypeScript valido aplicacion, tests y configuracion consolidados. |
-| `npm run test` | Superado localmente | 59 tests Vitest superados. |
+| `npm run test` | Superado localmente | 61 tests Vitest superados. |
 | `npm run build` | Superado localmente | Build de produccion generado correctamente. |
-| `node scripts/check-bundle-size.mjs` | Superado localmente | 98.0 KiB gzip de JS + CSS; presupuesto configurado: 180 KiB. |
+| `node scripts/check-bundle-size.mjs` | Superado localmente | 98.1 KiB gzip de JS + CSS; presupuesto configurado: 180 KiB. |
 | `npm run test:e2e` | Pendiente de CI | Chromium local no inicia por `libnspr4.so`; WebKit y sus dependencias tampoco estan disponibles en el entorno local. |
 
 La ejecucion pendiente de Playwright no se sustituye con `--list`. CI instala Chromium y WebKit y

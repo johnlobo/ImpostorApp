@@ -61,6 +61,18 @@ describe('recovery service', () => {
     },
   )
 
+  it('clears storage-full data only after confirmation and acquiring the writer lease', async () => {
+    const deps = dependencies({ initializationError: 'storage-full' })
+    const service = createRecoveryService(deps)
+    await service.initialize()
+
+    await service.clearAllData({ confirmed: true })
+
+    expect(deps.acquire).toHaveBeenCalledOnce()
+    expect(deps.clearAllData).toHaveBeenCalledWith({ confirmed: true })
+    expect(service.getState()).toEqual({ status: 'cleared' })
+  })
+
   it('preserves an incompatible database without trying to acquire the writer lease', async () => {
     const deps = dependencies({ initializationError: 'incompatible-data' })
     const service = createRecoveryService(deps)

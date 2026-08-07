@@ -151,7 +151,12 @@ export class DexiePersistenceGateway implements PersistenceGateway {
       })
       return { ok: true, value: undefined }
     } catch (error) {
-      return failure(mapStorageError(error))
+      try {
+        await this.database.deleteDatabase()
+        return { ok: true, value: undefined }
+      } catch {
+        return failure(mapStorageError(error))
+      }
     }
   }
 }
