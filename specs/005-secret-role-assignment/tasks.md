@@ -81,7 +81,7 @@ a la lista compartida y nunca ejecuta de nuevo RNG.
 - [X] T039 [P] Crear E2E de dispositivo compartido, awareness, privacidad DOM y reload offline
 - [X] T040 [P] Cubrir axe, teclado, targets tactiles y overflow a 320 px
 - [X] T041 Ejecutar quickstart, format, lint, typecheck, unitarios, build, bundle y Playwright
-- [ ] T042 Publicar PR, validar CI/Pages y reconciliar IMP-5 e IMP-32..IMP-37 en Jira
+- [X] T042 Publicar PR, validar CI/Pages y reconciliar IMP-5 e IMP-32..IMP-37 en Jira
 
 ## Dependencies
 
