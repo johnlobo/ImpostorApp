@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 const databaseName = 'impostorapp-platform'
-const databaseVersion = 1
+const databaseVersion = 10
 const recoveryStore = 'recoverySnapshots'
 
 interface SnapshotFixture {

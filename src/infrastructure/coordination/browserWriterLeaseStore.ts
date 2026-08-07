@@ -41,9 +41,21 @@ export class BrowserWriterLeaseStore implements WriterLeaseStore {
   }
 
   release(instanceId: string): Promise<void> {
-    return this.exclusive(async () => {
-      if ((await this.read())?.instanceId === instanceId) localStorage.removeItem(leaseKey)
+    return this.exclusive(() => {
+      this.releaseImmediately(instanceId)
+      return Promise.resolve()
     })
+  }
+
+  releaseImmediately(instanceId: string): void {
+    const value = localStorage.getItem(leaseKey)
+    if (!value) return
+    try {
+      const current = JSON.parse(value) as StoredWriterLease
+      if (current.instanceId === instanceId) localStorage.removeItem(leaseKey)
+    } catch {
+      localStorage.removeItem(leaseKey)
+    }
   }
 
   private exclusive<T>(operation: () => Promise<T>): Promise<T> {

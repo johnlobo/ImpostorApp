@@ -4,6 +4,7 @@ import type { PublicPlatformError } from '../../domain/entities/platform'
 import { persistenceMigrations, type PersistenceMigration } from './migrations'
 
 export const CURRENT_SCHEMA_VERSION = persistenceMigrations.at(-1)?.version ?? 1
+const CURRENT_INDEXED_DB_VERSION = CURRENT_SCHEMA_VERSION * 10
 
 type DatabaseMode = 'read-write' | 'safe-read-only'
 type DatabaseInitializationResult =
@@ -97,7 +98,7 @@ export class PersistenceDatabase {
 
   async initialize(): Promise<DatabaseInitializationResult> {
     const existing = await this.openNative()
-    if (existing && existing.version > CURRENT_SCHEMA_VERSION && !this.options.migrations) {
+    if (existing && existing.version > CURRENT_INDEXED_DB_VERSION && !this.options.migrations) {
       this.mode = 'safe-read-only'
       this.nativeDatabase = existing
       return { ok: false, error: incompatibleError }

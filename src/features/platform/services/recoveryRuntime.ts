@@ -8,9 +8,13 @@ const clock = {
   now: () => Date.now(),
   nowIso: () => new Date().toISOString(),
 }
+const instanceKey = 'impostorapp:writer-instance'
+const instanceId = sessionStorage.getItem(instanceKey) ?? crypto.randomUUID()
+sessionStorage.setItem(instanceKey, instanceId)
+const writerStore = new BrowserWriterLeaseStore()
 const writer = createWriterLeaseCoordinator({
-  instanceId: crypto.randomUUID(),
-  store: new BrowserWriterLeaseStore(),
+  instanceId,
+  store: writerStore,
   clock,
   leaseTimeoutMs: 15_000,
 })
@@ -35,5 +39,5 @@ if (typeof window !== 'undefined') {
       void recoveryService.retry()
     }
   }, 5_000)
-  window.addEventListener('pagehide', () => void writer.release())
+  window.addEventListener('pagehide', () => writerStore.releaseImmediately(instanceId))
 }
