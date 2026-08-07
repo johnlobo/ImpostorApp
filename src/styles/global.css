@@ -309,7 +309,8 @@ button:disabled {
   outline-offset: 3px;
 }
 .choice input:disabled + span {
-  opacity: 0.5;
+  color: #4b5563;
+  background: #f3f4f6;
 }
 .toggle-control {
   display: flex;

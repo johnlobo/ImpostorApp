@@ -29,7 +29,7 @@ test.describe('game configuration accessibility', () => {
 
   test('stays inside the mobile viewport', async ({ page }) => {
     await openConfiguration(page)
-    await page.getByLabel('Con temporizador').check()
+    await page.getByText('Con temporizador', { exact: true }).click()
     const dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
       content: document.documentElement.scrollWidth,
