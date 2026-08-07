@@ -170,6 +170,19 @@ test.describe('durable recovery', () => {
     await expect(page.getByTestId('recovery-snapshot')).toHaveAttribute('data-phase', 'clues')
   })
 
+  test('blocks all game mutations when a secret-round snapshot is incompatible', async ({
+    page,
+  }) => {
+    await seedSnapshot(page, snapshot(5, 'round-prepared'))
+    await page.reload()
+
+    await expect(page.getByRole('heading', { name: 'Modo seguro de solo lectura' })).toBeVisible()
+    await expect(
+      page.getByText('Estos datos pertenecen a una versión no compatible.'),
+    ).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Jugadores' })).not.toBeVisible()
+  })
+
   test('reports storage-full without replacing existing data', async ({ page }) => {
     await seedSnapshot(page, snapshot(2))
     await failIndexedDbOpen(page, 'QuotaExceededError')

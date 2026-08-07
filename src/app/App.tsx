@@ -6,6 +6,7 @@ import {
 } from '../domain/entities/contentCatalog'
 import { isPreparedGame, type PreparedGame } from '../domain/entities/gameConfiguration'
 import { prepareRoster, type PreparedRoster } from '../domain/entities/playerGroup'
+import { isSecretRoundSnapshot, type RoundHandoff } from '../domain/entities/secretRoleAssignment'
 import { ContentCatalogScreen } from '../features/content-catalog/components/ContentCatalogScreen'
 import { ES_ADULT_CATALOG } from '../features/content-catalog/data/esAdultCatalog'
 import { ES_GENERAL_CATALOG } from '../features/content-catalog/data/esCatalog'
@@ -14,6 +15,8 @@ import { GameConfigurationScreen } from '../features/game-configuration/componen
 import { useGameConfiguration } from '../features/game-configuration/hooks/useGameConfiguration'
 import { PlayerGroupsScreen } from '../features/player-groups/components/PlayerGroupsScreen'
 import { usePlayerGroups } from '../features/player-groups/hooks/usePlayerGroups'
+import { SecretRoleAssignmentScreen } from '../features/secret-role-assignment/components/SecretRoleAssignmentScreen'
+import { useSecretRoleAssignment } from '../features/secret-role-assignment/hooks/useSecretRoleAssignment'
 import { InstallHelp } from '../features/platform/components/InstallHelp'
 import { OfflineStatus } from '../features/platform/components/OfflineStatus'
 import { RecoveryStatus } from '../features/platform/components/RecoveryStatus'
@@ -31,6 +34,7 @@ import {
   gameConfigurationRepository,
   playerGroupsRepository,
   recoveryService,
+  secretRoundRepository,
 } from '../features/platform/services/recoveryRuntime'
 import { translate } from '../i18n/translate'
 import { AppShell } from './AppShell'
@@ -100,11 +104,29 @@ function ContentCatalogFlow({
   return <ContentCatalogScreen controller={controller} onConfirmed={onConfirmed} />
 }
 
+function RoleAssignmentFlow({
+  content,
+  readOnly,
+  onStart,
+}: {
+  content: PreparedContentSelection
+  readOnly: boolean
+  onStart: (handoff: RoundHandoff) => void
+}) {
+  const resetHistory = useCallback(
+    () => conceptDrawRepository.reset(content.game.id, { confirmed: true }),
+    [content.game.id],
+  )
+  const controller = useSecretRoleAssignment(content, secretRoundRepository, readOnly, resetHistory)
+  return <SecretRoleAssignmentScreen controller={controller} onStart={onStart} />
+}
+
 export function App() {
   const [navigation, dispatch] = useReducer(navigationReducer, initialNavigationState)
   const [configurationRoster, setConfigurationRoster] = useState<PreparedRoster | null>(null)
   const [confirmedGame, setConfirmedGame] = useState<PreparedGame | null>(null)
-  const [, setConfirmedContent] = useState<PreparedContentSelection | null>(null)
+  const [confirmedContent, setConfirmedContent] = useState<PreparedContentSelection | null>(null)
+  const [roundHandoff, setRoundHandoff] = useState<RoundHandoff | null>(null)
   const offline = useOfflineLifecycle()
   const installation = useInstallPrompt()
   const update = useAppUpdate(appUpdateCoordinator)
@@ -119,16 +141,26 @@ export function App() {
     snapshot?.phase === 'content-selected' && isPreparedContentSelection(snapshot.payload)
       ? snapshot.payload
       : null
+  const recoveredSecretRound =
+    snapshot?.phase === 'round-prepared' && isSecretRoundSnapshot(snapshot.payload)
+      ? snapshot.payload
+      : null
+  const invalidSecretRound = snapshot?.phase === 'round-prepared' && !recoveredSecretRound
   const recoveredGame =
     snapshot?.phase === 'configured' && isPreparedGame(snapshot.payload)
       ? snapshot.payload
-      : (recoveredContent?.game ?? null)
+      : (recoveredContent?.game ?? recoveredSecretRound?.content.game ?? null)
   const activeGame = confirmedGame ?? recoveredGame
+  const activeContent =
+    confirmedContent ?? recoveredContent ?? recoveredSecretRound?.content ?? null
   const handleGameConfirmed = useCallback((game: PreparedGame) => {
     setConfirmedGame(game)
   }, [])
   const handleContentConfirmed = useCallback((content: PreparedContentSelection) => {
     setConfirmedContent(content)
+  }, [])
+  const handleRoundStarted = useCallback((handoff: RoundHandoff) => {
+    setRoundHandoff(handoff)
   }, [])
 
   return (
@@ -155,7 +187,24 @@ export function App() {
             onRetryPreparation={offline.retryPreparation}
           />
           {(recovery.state.status === 'ready' || recovery.state.status === 'observer') &&
-            (activeGame ? (
+            (invalidSecretRound ? (
+              <main className="status-message error-message" role="alert">
+                <h2>{translate('recovery.safeMode')}</h2>
+                <p>{translate('platform.incompatibleData')}</p>
+                <p>{translate('recovery.dataPreserved')}</p>
+              </main>
+            ) : roundHandoff ? (
+              <main className="status-message success-message" role="status">
+                <h2>{translate('roles.roundReady')}</h2>
+                <p>{translate('roles.roundReady.detail')}</p>
+              </main>
+            ) : activeContent ? (
+              <RoleAssignmentFlow
+                content={activeContent}
+                readOnly={recovery.state.status === 'observer'}
+                onStart={handleRoundStarted}
+              />
+            ) : activeGame ? (
               <ContentCatalogFlow
                 game={activeGame}
                 readOnly={recovery.state.status === 'observer'}

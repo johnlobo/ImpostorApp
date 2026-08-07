@@ -8,6 +8,7 @@ import { createContentPreferencesRepository } from '../../../infrastructure/pers
 import { createContentSelectionRepository } from '../../../infrastructure/persistence/contentSelectionRepository'
 import { createConceptDrawRepository } from '../../../infrastructure/persistence/conceptDrawRepository'
 import { createGameConfigurationRepository } from '../../../infrastructure/persistence/gameConfigurationRepository'
+import { createSecretRoundRepository } from '../../../infrastructure/persistence/secretRoundRepository'
 import { createRecoveryService } from './recoveryService'
 
 const clock = {
@@ -51,6 +52,11 @@ export const contentSelectionRepository = createContentSelectionRepository(
 export const conceptDrawRepository = createConceptDrawRepository(
   database,
   () => writer.current().mode === 'writer',
+  clock.nowIso,
+)
+export const secretRoundRepository = createSecretRoundRepository(
+  database,
+  { hasWriterLease: () => writer.current().mode === 'writer' },
   clock.nowIso,
 )
 
