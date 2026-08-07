@@ -194,14 +194,15 @@ async function durableSnapshotRevision(page: Page): Promise<number | undefined> 
 
 test.describe('controlled two-version update', () => {
   test.describe.configure({ mode: 'serial' })
-  test.skip(
-    ({ browserName }) => browserName !== 'chromium',
-    'Service-worker updates are Chromium-only',
-  )
+  test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium service-worker coverage')
 
   let versionServer: VersionServer
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'chromium-pwa',
+      'Service-worker update cycles run once in the dedicated Chromium PWA project',
+    )
     versionServer = await startVersionServer()
     await page.addInitScript(() => {
       const boots = Number(sessionStorage.getItem('impostor-e2e-boots') ?? '0') + 1
@@ -255,11 +256,11 @@ test.describe('controlled two-version update', () => {
     await setSimulatedGameState(page, false)
 
     await expect(prompt).toHaveAttribute('data-state', 'available')
+    const reloaded = page.waitForEvent('load')
     await page.getByRole('button', { name: 'Aplicar actualización' }).click()
+    await reloaded
 
-    await expect
-      .poll(() => page.evaluate(() => sessionStorage.getItem('impostor-e2e-boots')))
-      .toBe('2')
+    expect(await page.evaluate(() => sessionStorage.getItem('impostor-e2e-boots'))).toBe('2')
     await page.waitForTimeout(500)
     expect(await page.evaluate(() => sessionStorage.getItem('impostor-e2e-boots'))).toBe('2')
     await expect.poll(() => durableSnapshotRevision(page)).toBe(8)

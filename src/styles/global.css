@@ -85,3 +85,145 @@ button {
     animation-iteration-count: 1 !important;
   }
 }
+
+.player-groups {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+.section-header,
+.player-row,
+.saved-group,
+.input-action,
+.row-actions,
+.icon-actions,
+.prepare-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.section-header,
+.saved-group {
+  justify-content: space-between;
+}
+.section-header h2,
+.saved-groups-section h3,
+.status-message p {
+  margin: 0;
+}
+.section-header p {
+  margin: 0.25rem 0 0;
+}
+.player-count {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+.inline-form {
+  display: grid;
+  gap: 0.5rem;
+}
+.inline-form label {
+  font-weight: 700;
+}
+.input-action input,
+.player-row input {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--tap-target);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.65rem 0.75rem;
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
+}
+.input-action input {
+  flex: 1 1 auto;
+}
+.player-list,
+.saved-groups-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.player-row,
+.saved-group {
+  border-bottom: 1px solid var(--border);
+  padding-block: 0.5rem;
+}
+.player-row .position {
+  width: 1.5rem;
+  flex: 0 0 1.5rem;
+  text-align: center;
+  font-weight: 700;
+}
+.player-row input {
+  flex: 1 1 auto;
+}
+.icon-actions {
+  flex: 0 0 auto;
+  gap: 0.25rem;
+}
+.icon-actions button {
+  width: var(--tap-target);
+  min-width: var(--tap-target);
+  padding: 0;
+  font-size: 1.2rem;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.primary-action {
+  border-color: #176b52;
+  color: #ffffff;
+  background: #176b52;
+  font-weight: 700;
+}
+.status-message,
+.empty-state,
+.success-message {
+  margin: 0;
+  border-left: 4px solid var(--border);
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+}
+.error-message {
+  border-left-color: #b42318;
+}
+.success-message {
+  border-left-color: #176b52;
+}
+.saved-groups-section {
+  display: grid;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+}
+.saved-group > div:first-child {
+  display: grid;
+  gap: 0.25rem;
+}
+@media (max-width: 420px) {
+  .section-header,
+  .saved-group {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .input-action {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .row-actions button {
+    flex: 1 1 0;
+  }
+  .player-row {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+  }
+  .player-row .icon-actions {
+    grid-column: 2;
+  }
+}
