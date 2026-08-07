@@ -51,4 +51,4 @@
 - [X] T027 [P] Completar textos y estilos en `src/i18n/es.ts` y `src/styles/global.css`
 - [X] T028 [P] Añadir axe y overflow en `tests/accessibility/game-configuration.spec.ts`
 - [X] T029 Ejecutar quickstart, quality gates, bundle y CI y registrar evidencia en `specs/003-game-configuration/checklists/implementation.md`
-- [ ] T030 Reconciliar tareas, PR, Pages y Jira IMP-22 a IMP-26
+- [X] T030 Reconciliar tareas, PR, Pages y Jira IMP-22 a IMP-26
