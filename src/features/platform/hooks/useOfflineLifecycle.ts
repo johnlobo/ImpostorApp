@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { BrowserConnectivity } from '../../../infrastructure/pwa/browserConnectivity'
 import { registerAppServiceWorker } from '../../../infrastructure/pwa/registerServiceWorker'
+import { notifyAppUpdateAvailable } from '../services/appUpdateRuntime'
 import { transitionOfflineLifecycle } from '../services/offlineLifecycle'
 
 async function hasPreparedCache(): Promise<boolean> {
@@ -29,7 +30,7 @@ export function useOfflineLifecycle() {
     }
     const serviceWorker = registerAppServiceWorker({
       onOfflineReady: markOfflineReady,
-      onUpdateAvailable: () => undefined,
+      onUpdateAvailable: () => notifyAppUpdateAvailable('next'),
       onRegistrationError: () =>
         dispatch({ type: 'PREPARATION_REQUIRED', online: navigator.onLine }),
     })
