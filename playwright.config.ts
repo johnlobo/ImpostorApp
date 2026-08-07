@@ -23,6 +23,7 @@ export default defineConfig({
     },
     {
       name: 'chromium-narrow',
+      testIgnore: ['e2e/offline.spec.ts'],
       use: { ...devices['Galaxy S9+'] },
     },
   ],

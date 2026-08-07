@@ -36,12 +36,12 @@ export function useOfflineLifecycle() {
     })
   }, [])
 
-  const retryPreparation = useCallback((): Promise<void> => {
-    if (navigator.onLine) {
-      dispatch({ type: 'RETRY_REQUESTED' })
-      window.location.reload()
-    }
-    return Promise.resolve()
+  const retryPreparation = useCallback(async (): Promise<void> => {
+    if (!navigator.onLine) return
+    dispatch({ type: 'RETRY_REQUESTED' })
+    const registrations = await navigator.serviceWorker?.getRegistrations()
+    await Promise.all((registrations ?? []).map((registration) => registration.unregister()))
+    window.location.reload()
   }, [])
 
   return { state, online, retryPreparation }

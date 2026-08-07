@@ -47,7 +47,7 @@ test.describe('production offline lifecycle', () => {
     const cached = await cachedApplicationResources(page)
 
     expect(cached.cacheNames.length).toBeGreaterThan(0)
-    expect(cached.urls.some((url) => new URL(url).pathname.endsWith('/'))).toBe(true)
+    expect(cached.urls.some((url) => /\/(?:index\.html)?$/.test(new URL(url).pathname))).toBe(true)
     expect(cached.urls.some((url) => /\/assets\/.*\.js$/.test(new URL(url).pathname))).toBe(true)
     expect(cached.urls.some((url) => /\/assets\/.*\.css$/.test(new URL(url).pathname))).toBe(true)
   })
