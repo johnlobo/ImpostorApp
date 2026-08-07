@@ -46,6 +46,7 @@ describe('player groups repository', () => {
       ],
     },
     { ...group, name: ' Amigos ' },
+    { ...group, name: '' },
   ])('rejects malformed persisted data as incompatible', async (record) => {
     const repository = createPlayerGroupsRepository(gateway([record]))
     expect(await repository.list()).toEqual({

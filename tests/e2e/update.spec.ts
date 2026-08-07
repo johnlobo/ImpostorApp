@@ -194,14 +194,15 @@ async function durableSnapshotRevision(page: Page): Promise<number | undefined> 
 
 test.describe('controlled two-version update', () => {
   test.describe.configure({ mode: 'serial' })
-  test.skip(
-    ({ browserName }) => browserName !== 'chromium',
-    'Service-worker updates are Chromium-only',
-  )
+  test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium service-worker coverage')
 
   let versionServer: VersionServer
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'chromium-pwa',
+      'Service-worker update cycles run once in the dedicated Chromium PWA project',
+    )
     versionServer = await startVersionServer()
     await page.addInitScript(() => {
       const boots = Number(sessionStorage.getItem('impostor-e2e-boots') ?? '0') + 1

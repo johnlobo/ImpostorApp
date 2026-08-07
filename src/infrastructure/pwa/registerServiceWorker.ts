@@ -15,7 +15,6 @@ export async function activateRegisteredUpdate(): Promise<void> {
   reloadRequested = true
   try {
     await activateUpdate()
-    window.location.reload()
   } catch (error) {
     reloadRequested = false
     throw error

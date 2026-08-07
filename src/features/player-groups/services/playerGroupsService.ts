@@ -32,6 +32,7 @@ export interface PlayerGroupsService {
   loadGroup(groupId: string): void
   deleteGroup(groupId: string): Promise<void>
   prepare(): void
+  retry(): Promise<void>
   clearFeedback(): void
 }
 
@@ -55,6 +56,7 @@ export function createPlayerGroupsService({
     prepared: null,
   }
   const listeners = new Set<(state: PlayerGroupsState) => void>()
+  let retryOperation: (() => Promise<void>) | null = null
 
   function setState(next: PlayerGroupsState): void {
     state = next
@@ -76,13 +78,15 @@ export function createPlayerGroupsService({
     setState({ ...state, status: 'loading', storageError: null })
     const result = await repository.list()
     if (!result.ok) {
+      retryOperation = initialize
       setState({ ...state, status: 'error', storageError: result.error })
       return
     }
+    retryOperation = null
     ready({ groups: result.value })
   }
 
-  return {
+  const service: PlayerGroupsService = {
     getState: () => state,
     subscribe(listener) {
       listeners.add(listener)
@@ -114,9 +118,11 @@ export function createPlayerGroupsService({
       setState({ ...state, status: 'saving', issues: [], storageError: null })
       const result = await repository.save(built.value)
       if (!result.ok) {
+        retryOperation = () => service.saveGroup(name)
         setState({ ...state, status: 'error', storageError: result.error })
         return
       }
+      retryOperation = null
       const groups = [
         ...state.groups.filter(({ id: groupId }) => groupId !== id),
         result.value,
@@ -139,9 +145,11 @@ export function createPlayerGroupsService({
       setState({ ...state, status: 'saving', issues: [], storageError: null })
       const result = await repository.delete(groupId)
       if (!result.ok) {
+        retryOperation = () => service.deleteGroup(groupId)
         setState({ ...state, status: 'error', storageError: result.error })
         return
       }
+      retryOperation = null
       ready({ groups: state.groups.filter(({ id }) => id !== groupId) })
     },
     prepare() {
@@ -152,8 +160,12 @@ export function createPlayerGroupsService({
       }
       ready({ prepared: result.value })
     },
+    async retry() {
+      await (retryOperation ?? initialize)()
+    },
     clearFeedback() {
       ready({})
     },
   }
+  return service
 }

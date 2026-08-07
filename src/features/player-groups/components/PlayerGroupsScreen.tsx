@@ -1,5 +1,10 @@
 import { useState, type FormEvent } from 'react'
-import type { PlayerGroupIssue, SavedPlayerGroup } from '../../../domain/entities/playerGroup'
+import {
+  MAX_GROUP_NAME_LENGTH,
+  MAX_PLAYER_NAME_LENGTH,
+  type PlayerGroupIssue,
+  type SavedPlayerGroup,
+} from '../../../domain/entities/playerGroup'
 import type { PublicPlatformError } from '../../../domain/entities/platform'
 import { translate } from '../../../i18n/translate'
 import type { PlayerGroupsState } from '../services/playerGroupsService'
@@ -40,6 +45,10 @@ const storageKeys: Record<PublicPlatformError['code'], Parameters<typeof transla
   'writer-unavailable': 'platform.writerUnavailable',
   'update-failed': 'platform.updateFailed',
   'unknown-storage-error': 'groups.error.storage',
+}
+
+function limitCharacters(value: string, maximum: number): string {
+  return Array.from(value).slice(0, maximum).join('')
 }
 
 function GroupRow({
@@ -90,8 +99,7 @@ function PlayerNameInput({
     <input
       aria-label={translate('players.renameLabel', { name })}
       value={value}
-      maxLength={31}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={(event) => setValue(limitCharacters(event.target.value, MAX_PLAYER_NAME_LENGTH))}
       onBlur={() => {
         if (value !== name) onRename(playerId, value)
         setValue(name)
@@ -127,7 +135,6 @@ export function PlayerGroupsScreen({
   function saveGroup(event: FormEvent) {
     event.preventDefault()
     onSaveGroup(groupName)
-    setGroupName('')
   }
 
   function loadSavedGroup(group: SavedPlayerGroup) {
@@ -138,6 +145,7 @@ export function PlayerGroupsScreen({
     ) {
       return
     }
+    setGroupName(group.name)
     onLoadGroup(group.id)
   }
 
@@ -164,8 +172,9 @@ export function PlayerGroupsScreen({
           <input
             id="player-name"
             value={playerName}
-            maxLength={31}
-            onChange={(event) => setPlayerName(event.target.value)}
+            onChange={(event) =>
+              setPlayerName(limitCharacters(event.target.value, MAX_PLAYER_NAME_LENGTH))
+            }
             disabled={pending || readOnly}
             autoComplete="off"
           />
@@ -267,8 +276,9 @@ export function PlayerGroupsScreen({
             <input
               id="group-name"
               value={groupName}
-              maxLength={41}
-              onChange={(event) => setGroupName(event.target.value)}
+              onChange={(event) =>
+                setGroupName(limitCharacters(event.target.value, MAX_GROUP_NAME_LENGTH))
+              }
               disabled={pending || readOnly}
               autoComplete="off"
             />

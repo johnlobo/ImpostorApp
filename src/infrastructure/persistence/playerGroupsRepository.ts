@@ -21,6 +21,7 @@ function isGroup(value: unknown): value is SavedPlayerGroup {
     group.id.length === 0 ||
     group.schemaVersion !== PLAYER_GROUP_SCHEMA_VERSION ||
     typeof group.name !== 'string' ||
+    group.name.length === 0 ||
     normalizeName(group.name) !== group.name ||
     Array.from(group.name).length > MAX_GROUP_NAME_LENGTH ||
     typeof group.createdAt !== 'string' ||

@@ -92,6 +92,31 @@ describe('PlayerGroupsScreen', () => {
     expect(props.onLoadGroup).not.toHaveBeenCalled()
   })
 
+  it('restores the loaded group name for direct updates', async () => {
+    const props = callbacks()
+    render(
+      <PlayerGroupsScreen
+        state={{
+          ...ready,
+          draft: { players: [], dirty: false, sourceGroupId: null },
+          groups: [group],
+        }}
+        {...props}
+      />,
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Cargar' }))
+    expect(screen.getByLabelText('Nombre del grupo')).toHaveValue('Amigos')
+  })
+
+  it('limits names by Unicode code points', async () => {
+    const props = callbacks()
+    render(<PlayerGroupsScreen state={ready} {...props} />)
+    const input = screen.getByLabelText('Nombre del jugador')
+    const face = String.fromCodePoint(0x1f600)
+    await userEvent.type(input, face.repeat(32))
+    expect(input).toHaveValue(face.repeat(30))
+  })
+
   it('offers accessible reordering and deletion controls', () => {
     const props = callbacks()
     render(

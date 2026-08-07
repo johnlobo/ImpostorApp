@@ -28,7 +28,7 @@ export function usePlayerGroups(repository: PlayerGroupsRepository) {
     loadGroup: (groupId: string) => service.loadGroup(groupId),
     deleteGroup: (groupId: string) => service.deleteGroup(groupId),
     prepare: () => service.prepare(),
-    retry: () => service.initialize(),
+    retry: () => service.retry(),
     clearFeedback: () => service.clearFeedback(),
   }
 }
