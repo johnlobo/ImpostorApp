@@ -14,7 +14,7 @@
 - [X] `npm run test`: 28 archivos, 191 pruebas
 - [X] `npm run build`
 - [X] Bundle: 114.4 KiB gzip de 180 KiB
-- [ ] Playwright E2E y accesibilidad en CI
+- [X] Playwright E2E y accesibilidad en CI
 - [ ] PR fusionada, Pages desplegada y Jira reconciliado
 
 ## Local environment note
@@ -23,3 +23,9 @@ Chromium no puede arrancar localmente porque el host no incluye `libnspr4.so` y 
 dependencias requiere privilegios sudo no disponibles. Los archivos Playwright pasan typecheck,
 ESLint y discovery; su ejecucion completa queda asignada al workflow CI, que instala las
 dependencias del navegador.
+
+## CI evidence
+
+- PR: https://github.com/johnlobo/ImpostorApp/pull/6
+- Workflow verde: https://github.com/johnlobo/ImpostorApp/actions/runs/31175982001
+- Jobs: quality 46 s, offline-smoke 51 s y E2E 2 min 37 s.

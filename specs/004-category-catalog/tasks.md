@@ -50,9 +50,9 @@
 
 - [X] T027 Integrar el handoff `PreparedGame` -> catalogo -> `PreparedContentSelection` en `src/app/App.tsx` y `src/features/platform/services/recoveryRuntime.ts`
 - [X] T028 [P] Completar textos y estilos en `src/i18n/es.ts` y `src/styles/global.css`
-- [ ] T029 [P] Cubrir flujo offline, CRUD, agotamiento y reset en `tests/e2e/content-catalog.spec.ts`
-- [ ] T030 [P] Cubrir axe, teclado, privacidad y overflow en `tests/accessibility/content-catalog.spec.ts`
-- [ ] T031 Ejecutar quickstart, quality gates, bundle y CI y registrar evidencia en `specs/004-category-catalog/checklists/implementation.md`
+- [X] T029 [P] Cubrir flujo offline, CRUD, agotamiento y reset en `tests/e2e/content-catalog.spec.ts`
+- [X] T030 [P] Cubrir axe, teclado, privacidad y overflow en `tests/accessibility/content-catalog.spec.ts`
+- [X] T031 Ejecutar quickstart, quality gates, bundle y CI y registrar evidencia en `specs/004-category-catalog/checklists/implementation.md`
 - [ ] T032 Reconciliar tareas, PR, Pages y Jira IMP-27, IMP-28, IMP-31, IMP-30 e IMP-29
 
 ## Dependencies
