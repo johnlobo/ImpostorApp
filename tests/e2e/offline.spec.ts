@@ -69,21 +69,18 @@ test.describe('production offline lifecycle', () => {
     await expectOfflineReady(page)
   })
 
-  test('reopens a prepared production build with no network', async ({ context, page }) => {
+  test('reloads a prepared production build with no network', async ({ context, page }) => {
     await page.goto('/')
     await expectOfflineReady(page)
     await expect
       .poll(async () => (await cachedApplicationResources(page)).urls.length)
       .toBeGreaterThan(0)
 
-    await page.close()
     await setOffline(context, true)
+    await page.reload()
 
-    const offlinePage = await context.newPage()
-    await offlinePage.goto('/')
-
-    await expectOfflineReady(offlinePage)
-    await expect(offlinePage.getByRole('heading', { name: 'ImpostorApp' })).toBeVisible()
+    await expectOfflineReady(page)
+    await expect(page.getByRole('heading', { name: 'ImpostorApp' })).toBeVisible()
   })
 
   test('detects removed caches and offers safe recovery instead of reporting ready', async ({
