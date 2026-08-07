@@ -1,11 +1,18 @@
 # Protocolo de usabilidad de instalacion
 
-**Feature**: `IMP-1` / `001-mobile-offline-platform`  
-**Estado general**: `PENDIENTE`  
+**Feature**: `IMP-1` / `001-mobile-offline-platform`
+**Estado general**: `CERRADO POR ACEPTACION DE DESVIACION`
 **Participantes requeridos**: al menos 10
 
-Este documento prepara la validacion de SC-002. Todas las sesiones estan pendientes y no se declara
-ningun porcentaje de exito hasta ejecutar el protocolo con participantes y dispositivos fisicos.
+Este documento prepara la validacion de SC-002. Las sesiones no se ejecutaron y no se declara ningun
+porcentaje de exito; el cierre excepcional se documenta como desviacion aceptada a continuacion.
+
+## Desviacion aceptada
+
+El 2026-08-07, el propietario confirmo que la aplicacion publicada funciona y acepto cerrar T053
+sin ejecutar el protocolo con 10 participantes. No se calcula ni declara el porcentaje de SC-002;
+la ausencia de sesiones queda registrada como `NO MEDIDO`, no como exito. El protocolo se conserva
+para una validacion posterior si el producto necesita evidencia cuantitativa.
 
 ## Objetivo y criterio
 
@@ -43,32 +50,32 @@ El facilitador dice: "Instala ImpostorApp en la pantalla de inicio y abrela desd
 
 | ID | Dispositivo | SO | Navegador | Build/URL | Duracion (s) | Instalada | Abierta desde icono | Ayuda directa | Ayuda recibida | Resultado | Estado |
 |---|---|---|---|---|---:|---|---|---|---|---|---|
-| P01 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
-| P02 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
-| P03 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
-| P04 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
-| P05 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
-| P06 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
-| P07 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
-| P08 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
-| P09 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
-| P10 | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE | PENDIENTE |
+| P01 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
+| P02 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
+| P03 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
+| P04 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
+| P05 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
+| P06 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
+| P07 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
+| P08 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
+| P09 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
+| P10 | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO | NO MEDIDO |
 
 Valores de `Resultado`: `EXITO` solo si las tres condiciones de SC-002 se cumplen; en cualquier otro
-caso, `FALLO`. `Estado` usa `PENDIENTE`, `EJECUTADO` o `BLOQUEADO`.
+caso, `FALLO`. `Estado` usa `NO MEDIDO`, `EJECUTADO` o `BLOQUEADO`.
 
 ## Evaluacion agregada
 
 | Medida | Resultado | Criterio | Estado |
 |---|---|---|---|
-| Participantes ejecutados | PENDIENTE | Al menos 10 | PENDIENTE |
-| Exitos sin ayuda directa y en menos de 120 s | PENDIENTE | Al menos 9 de 10 | PENDIENTE |
-| Tasa de exito | PENDIENTE | Al menos 90 % | PENDIENTE |
+| Participantes ejecutados | NO MEDIDO | Al menos 10 | NO MEDIDO |
+| Exitos sin ayuda directa y en menos de 120 s | NO MEDIDO | Al menos 9 de 10 | NO MEDIDO |
+| Tasa de exito | NO MEDIDO | Al menos 90 % | NO MEDIDO |
 
-No completar el resultado agregado con participantes pendientes. Si se ejecutan mas de 10 sesiones,
+No completar el resultado agregado con participantes no medidos. Si se ejecutan mas de 10 sesiones,
 anadir filas y evaluar tanto las primeras 10 planificadas como el total, explicando cualquier
 exclusion antes de calcular el porcentaje.
 
-**Incidencias y patrones observados**: PENDIENTE
+**Incidencias y patrones observados**: NO MEDIDO
 
-**Responsable y fecha de ejecucion**: PENDIENTE
+**Responsable y fecha de ejecucion**: propietario del producto, desviacion aceptada 2026-08-07
