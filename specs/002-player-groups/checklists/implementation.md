@@ -2,7 +2,7 @@
 
 **Feature**: `IMP-2` / `002-player-groups`  
 **Date**: 2026-08-07  
-**State**: Implementation complete; full Playwright execution pending CI
+**State**: Completed and validated in CI
 
 ## Traceability
 
@@ -23,15 +23,16 @@
 | Production build | Passed |
 | Bundle budget | 102.3 KiB gzip of 180 KiB |
 | Playwright discovery | 12 new cases across Chromium, WebKit and narrow Chromium |
-| Playwright execution | Pending CI; local browsers cannot launch because `libnspr4.so` is absent |
+| Playwright execution | CI run 31166082850: 48 passed, 15 expected skips, 2 known update-flow flakes passed on retry |
 
 ## Quickstart
 
 - A. Prepare roster: covered by domain, service, component and E2E tests.
 - B. Boundaries: covered for minimum, maximum, empty, length and duplicate names.
-- C. Save and reopen offline: E2E authored; execution pending CI.
+- C. Save and reopen offline: passed in Chromium CI.
 - D. Protect unsaved changes: replacement confirmation and deletion preservation covered.
-- E. Failures and accessibility: unit/component coverage complete; axe and overflow execution pending CI.
+- E. Failures and accessibility: unit, component, axe and overflow checks passed in CI.
 
-No manual result is inferred from test discovery. This record must be updated with the CI run before
-T023 and T024 can close.
+The first CI run exposed duplicate alerts during global recovery failures. Commit `ab6d5b6` fixed
+the composition by hiding the feature in fatal recovery states and making observer mode read-only.
+The second run passed. Two pre-existing A/B update cases required retries and remain recorded as flaky.

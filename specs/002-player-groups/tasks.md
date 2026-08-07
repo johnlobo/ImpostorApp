@@ -46,5 +46,5 @@ description: "Implementation tasks for IMP-2 player and saved-group management"
 
 - [X] T021 Add player-group layout, focus and responsive styles in `src/styles/global.css`
 - [X] T022 Add axe and mobile-overflow coverage in `tests/accessibility/player-groups.spec.ts`
-- [ ] T023 Execute quickstart A-E and record evidence in `specs/002-player-groups/checklists/implementation.md`
-- [ ] T024 Run all quality gates, reconcile Jira and open the GitHub pull request
+- [X] T023 Execute quickstart A-E and record evidence in `specs/002-player-groups/checklists/implementation.md`
+- [X] T024 Run all quality gates, reconcile Jira and open the GitHub pull request
