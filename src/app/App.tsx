@@ -49,26 +49,29 @@ export function App() {
             online={offline.online}
             onRetryPreparation={offline.retryPreparation}
           />
-          <PlayerGroupsScreen
-            state={playerGroups.state}
-            onAdd={(name) => playerGroups.apply({ type: 'add', name })}
-            onRename={(playerId, name) => playerGroups.apply({ type: 'rename', playerId, name })}
-            onRemove={(playerId) => playerGroups.apply({ type: 'remove', playerId })}
-            onMove={(playerId, direction) =>
-              playerGroups.apply({ type: 'move', playerId, direction })
-            }
-            onSaveGroup={(name) => {
-              void playerGroups.saveGroup(name)
-            }}
-            onLoadGroup={playerGroups.loadGroup}
-            onDeleteGroup={(groupId) => {
-              void playerGroups.deleteGroup(groupId)
-            }}
-            onPrepare={playerGroups.prepare}
-            onRetry={() => {
-              void playerGroups.retry()
-            }}
-          />
+          {(recovery.state.status === 'ready' || recovery.state.status === 'observer') && (
+            <PlayerGroupsScreen
+              readOnly={recovery.state.status === 'observer'}
+              state={playerGroups.state}
+              onAdd={(name) => playerGroups.apply({ type: 'add', name })}
+              onRename={(playerId, name) => playerGroups.apply({ type: 'rename', playerId, name })}
+              onRemove={(playerId) => playerGroups.apply({ type: 'remove', playerId })}
+              onMove={(playerId, direction) =>
+                playerGroups.apply({ type: 'move', playerId, direction })
+              }
+              onSaveGroup={(name) => {
+                void playerGroups.saveGroup(name)
+              }}
+              onLoadGroup={playerGroups.loadGroup}
+              onDeleteGroup={(groupId) => {
+                void playerGroups.deleteGroup(groupId)
+              }}
+              onPrepare={playerGroups.prepare}
+              onRetry={() => {
+                void playerGroups.retry()
+              }}
+            />
+          )}
         </>
       )}
     </AppShell>

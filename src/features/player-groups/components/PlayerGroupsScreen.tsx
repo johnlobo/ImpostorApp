@@ -5,6 +5,7 @@ import { translate } from '../../../i18n/translate'
 import type { PlayerGroupsState } from '../services/playerGroupsService'
 
 interface Props {
+  readOnly?: boolean
   state: PlayerGroupsState
   onAdd: (name: string) => void
   onRename: (playerId: string, name: string) => void
@@ -102,6 +103,7 @@ function PlayerNameInput({
 
 export function PlayerGroupsScreen({
   state,
+  readOnly = false,
   onAdd,
   onRename,
   onRemove,
@@ -164,10 +166,10 @@ export function PlayerGroupsScreen({
             value={playerName}
             maxLength={31}
             onChange={(event) => setPlayerName(event.target.value)}
-            disabled={pending}
+            disabled={pending || readOnly}
             autoComplete="off"
           />
-          <button type="submit" disabled={pending}>
+          <button type="submit" disabled={pending || readOnly}>
             {translate('players.add')}
           </button>
         </div>
@@ -205,7 +207,7 @@ export function PlayerGroupsScreen({
                 key={`${player.id}:${player.name}`}
                 playerId={player.id}
                 name={player.name}
-                disabled={pending}
+                disabled={pending || readOnly}
                 onRename={onRename}
               />
               <div className="icon-actions">
@@ -214,7 +216,7 @@ export function PlayerGroupsScreen({
                   aria-label={translate('players.moveUp', { name: player.name })}
                   title={translate('players.moveUp', { name: player.name })}
                   onClick={() => onMove(player.id, 'up')}
-                  disabled={pending || index === 0}
+                  disabled={pending || readOnly || index === 0}
                 >
                   ↑
                 </button>
@@ -223,7 +225,7 @@ export function PlayerGroupsScreen({
                   aria-label={translate('players.moveDown', { name: player.name })}
                   title={translate('players.moveDown', { name: player.name })}
                   onClick={() => onMove(player.id, 'down')}
-                  disabled={pending || index === state.draft.players.length - 1}
+                  disabled={pending || readOnly || index === state.draft.players.length - 1}
                 >
                   ↓
                 </button>
@@ -231,7 +233,7 @@ export function PlayerGroupsScreen({
                   type="button"
                   aria-label={translate('players.remove', { name: player.name })}
                   onClick={() => onRemove(player.id)}
-                  disabled={pending}
+                  disabled={pending || readOnly}
                 >
                   ×
                 </button>
@@ -246,7 +248,7 @@ export function PlayerGroupsScreen({
           type="button"
           className="primary-action"
           onClick={onPrepare}
-          disabled={pending || state.draft.players.length < 3}
+          disabled={pending || readOnly || state.draft.players.length < 3}
         >
           {translate('players.continue')}
         </button>
@@ -267,10 +269,10 @@ export function PlayerGroupsScreen({
               value={groupName}
               maxLength={41}
               onChange={(event) => setGroupName(event.target.value)}
-              disabled={pending}
+              disabled={pending || readOnly}
               autoComplete="off"
             />
-            <button type="submit" disabled={pending || state.draft.players.length < 3}>
+            <button type="submit" disabled={pending || readOnly || state.draft.players.length < 3}>
               {state.draft.sourceGroupId ? translate('groups.update') : translate('groups.save')}
             </button>
           </div>
@@ -286,7 +288,7 @@ export function PlayerGroupsScreen({
               <GroupRow
                 key={group.id}
                 group={group}
-                disabled={pending}
+                disabled={pending || readOnly}
                 onLoad={() => loadSavedGroup(group)}
                 onDelete={() => deleteSavedGroup(group)}
               />
