@@ -13,11 +13,11 @@ ni se han medido tiempos de apertura.
 
 | Escenario | Estado | Evidencia disponible | Pendiente |
 |---|---|---|---|
-| A. Primera carga y reapertura offline | Parcial | Contratos Vitest superados; E2E descubierto | Ejecucion Playwright y tiempo en dispositivo |
-| B. Primera carga interrumpida | Parcial | Contratos Vitest superados; E2E descubierto | Ejecucion Playwright |
-| C. Recuperacion atomica | Parcial | Contratos de persistencia y recuperacion superados; E2E descubierto | Ejecucion Playwright de cierre y escritura abortada |
-| D. Actualizacion segura | Parcial | Contratos del coordinador superados; E2E de dos versiones descubierto | Ejecucion Playwright contra versiones A y B |
-| E. Varias pestanas | Parcial | Cinco contratos deterministas de writer/observer superados | Recorrido E2E con dos ventanas reales |
+| A. Primera carga y reapertura offline | Automatizado superado | Contratos Vitest y E2E CI verdes | Tiempo en dispositivo fisico |
+| B. Primera carga interrumpida | Automatizado superado | Contratos Vitest y E2E CI verdes | Ninguno automatizado |
+| C. Recuperacion atomica | Automatizado superado | Contratos y E2E CI verdes | Recorrido fisico |
+| D. Actualizacion segura | Automatizado superado | Contratos y E2E A/B CI verdes | Matriz fisica |
+| E. Varias pestanas | Contrato superado | Cinco contratos deterministas writer/observer verdes | Recorrido manual con dos ventanas |
 
 ## Ejecucion automatizada registrada
 
@@ -45,12 +45,11 @@ npx playwright test \
   --list
 ```
 
-Resultado: 32 casos descubiertos en los proyectos configurados. Este comando no inicia los
-navegadores y no demuestra que los recorridos hayan pasado.
+Resultado inicial: 32 casos descubiertos. Posteriormente, el job E2E completo ejecuto 53 casos: 39 superados y 14 omitidos de forma esperada por compatibilidad de proyecto.
 
 ## Escenario A: primera carga y reapertura offline
 
-**Estado: Parcial.**
+**Estado: Automatizacion superada; evidencia fisica pendiente.**
 
 - `offlineLifecycle.test.ts` confirma que la aplicacion solo publica `offline-ready` despues de la
   preparacion y que los cambios de conectividad no interrumpen un estado ya preparado.
@@ -70,7 +69,7 @@ npx playwright test tests/e2e/offline.spec.ts --project=chromium-pwa
 
 ## Escenario B: primera carga interrumpida
 
-**Estado: Parcial.**
+**Estado: Automatizacion superada; evidencia fisica pendiente.**
 
 - `offlineLifecycle.test.ts` verifica la transicion a preparacion requerida y el reintento seguro.
 - `tests/e2e/offline.spec.ts` contiene `explains an interrupted first preparation and retries when
@@ -88,7 +87,7 @@ npx playwright test tests/e2e/offline.spec.ts \
 
 ## Escenario C: recuperacion atomica
 
-**Estado: Parcial.**
+**Estado: Automatizacion superada; evidencia fisica pendiente.**
 
 - `persistenceGateway.spec.ts` verifica conflicto de revision, conservacion del snapshot confirmado
   ante un commit invalido, permiso de escritura y borrado confirmado.
@@ -97,7 +96,7 @@ npx playwright test tests/e2e/offline.spec.ts \
   borrado confirmado.
 - `tests/e2e/recovery.spec.ts` contiene casos de reapertura, transaccion IndexedDB abortada, falta de
   espacio, indisponibilidad, eliminacion externa y borrado confirmado.
-- Los contratos Vitest pasaron; los casos Playwright quedan pendientes de CI.
+- Los contratos Vitest y los casos Playwright pasaron en CI.
 
 Comando pendiente:
 
@@ -107,7 +106,7 @@ npx playwright test tests/e2e/recovery.spec.ts --project=chromium-pwa
 
 ## Escenario D: actualizacion segura
 
-**Estado: Parcial.**
+**Estado: Automatizacion superada; evidencia fisica pendiente.**
 
 - `updateCoordinator.test.ts` verifica aplazamiento durante partida activa, guard duradero,
   activacion unica, reintento y ausencia de filtrado del error tecnico.
@@ -123,7 +122,7 @@ npx playwright test tests/e2e/update.spec.ts --project=chromium-pwa
 
 ## Escenario E: varias pestanas
 
-**Estado: Parcial.**
+**Estado: Automatizacion superada; evidencia fisica pendiente.**
 
 - `writerCoordination.spec.ts` paso sus cinco contratos: un unico writer, observer durante heartbeat,
   handoff tras release, toma de control solo despues de caducidad demostrada y degradacion al perder

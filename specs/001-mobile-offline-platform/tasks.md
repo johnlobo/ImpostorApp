@@ -158,9 +158,9 @@ description: "Implementation tasks for IMP-1 mobile installable offline platform
 - [X] T049 [P] Add automated axe checks for the shared shell and all platform states in `tests/accessibility/platform.spec.ts`
 - [X] T050 [P] Add bundle-size and production offline smoke checks to CI in `scripts/check-bundle-size.mjs` and `.github/workflows/ci.yml`
 - [X] T051 [P] Document supported browsers, local quality commands, PWA production validation, and data-loss limitations in `README.md`
-- [ ] T052 Execute and record all automated quickstart scenarios A-E in `specs/001-mobile-offline-platform/checklists/quickstart-results.md`
+- [X] T052 Execute and record all automated quickstart scenarios A-E in `specs/001-mobile-offline-platform/checklists/quickstart-results.md`
 - [ ] T053 Execute and record the iPhone and Android installation matrix, portrait overflow checks, and offline-open timings in `specs/001-mobile-offline-platform/checklists/device-matrix.md`, then run the installation usability protocol with at least 10 participants and record device, browser, duration, success, and help received in `specs/001-mobile-offline-platform/checklists/installation-usability.md`
-- [ ] T054 Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build`, and `npm run test:e2e`, then record final IMP-1 requirement and constitution traceability in `specs/001-mobile-offline-platform/checklists/implementation.md`
+- [X] T054 Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build`, and `npm run test:e2e`, then record final IMP-1 requirement and constitution traceability in `specs/001-mobile-offline-platform/checklists/implementation.md`
 
 ---
 

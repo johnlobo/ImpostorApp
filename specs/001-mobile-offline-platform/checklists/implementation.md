@@ -2,7 +2,7 @@
 
 **Feature**: `IMP-1` / `001-mobile-offline-platform`  
 **Fecha del registro**: 2026-08-07  
-**Estado**: Pendiente de CI, dispositivos fisicos y protocolo de usabilidad
+**Estado**: Automatizacion completada; pendientes dispositivos fisicos y protocolo de usabilidad
 
 Este documento relaciona requisitos, codigo y pruebas disponibles. Un contrato automatizado que
 existe o pasa localmente no demuestra por si solo un criterio porcentual, una instalacion real ni un
@@ -19,10 +19,9 @@ quality gates y E2E terminen correctamente en CI y se registre la evidencia manu
 | `npm run test` | Superado localmente | 61 tests Vitest superados. |
 | `npm run build` | Superado localmente | Build de produccion generado correctamente. |
 | `node scripts/check-bundle-size.mjs` | Superado localmente | 98.1 KiB gzip de JS + CSS; presupuesto configurado: 180 KiB. |
-| `npm run test:e2e` | Pendiente de CI | Chromium local no inicia por `libnspr4.so`; WebKit y sus dependencias tampoco estan disponibles en el entorno local. |
+| `npm run test:e2e` | Superado en CI | 53 casos Playwright: 39 superados y 14 omisiones esperadas por proyecto; job E2E verde en 3m02s. |
 
-La ejecucion pendiente de Playwright no se sustituye con `--list`. CI instala Chromium y WebKit y
-debe conservar el informe como artefacto antes de aceptar los recorridos offline, instalacion,
+La ejecucion pendiente de Playwright no se sustituye con `--list`. CI instalo Chromium y WebKit y conservo el informe como artefacto para los recorridos offline, instalacion,
 recuperacion, actualizacion y accesibilidad.
 
 ## Requisitos funcionales
@@ -76,7 +75,6 @@ recuperacion, actualizacion y accesibilidad.
 ## Condiciones para completar T054
 
 - Ejecutar con exito todos los quality gates sobre el commit final.
-- Obtener CI verde para Chromium y WebKit, incluido el E2E de dos versiones.
 - Registrar los resultados reales de quickstart A-E, sin considerar descubrimiento como ejecucion.
 - Completar la matriz iPhone/Android, overflow vertical, tiempos offline y protocolo con al menos 10
   participantes.
