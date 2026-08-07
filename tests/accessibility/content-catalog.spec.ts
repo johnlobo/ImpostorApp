@@ -78,6 +78,12 @@ test.describe('content catalog accessibility and privacy', () => {
   }) => {
     const secret = 'MARCADOR PRIVADO IMP4'
     await openCatalog(page)
+    await page.getByLabel('Nombre', { exact: true }).fill('Inválida')
+    await page.getByLabel('Conceptos, uno por línea').fill(`${secret}\n${secret}`)
+    await page.getByRole('button', { name: 'Crear categoría' }).click()
+    await expect(page.getByRole('alert')).toBeVisible()
+    expect(await page.getByRole('alert').textContent()).not.toContain(secret)
+
     await page.getByLabel('Nombre', { exact: true }).fill('Privada')
     await page.getByLabel('Conceptos, uno por línea').fill(`${secret}\nSegundo\nTercero`)
     await page.getByRole('button', { name: 'Crear categoría' }).click()
@@ -94,9 +100,9 @@ test.describe('content catalog accessibility and privacy', () => {
     }
     await page.getByRole('button', { name: 'Revisar selección' }).click()
     await page.getByRole('button', { name: 'Confirmar contenido' }).click()
-    await expect(page.getByRole('heading', { name: 'Contenido preparado' })).toBeVisible()
-    await page.getByRole('button', { name: 'Extraer concepto' }).click()
-    await expect(page.getByText('Concepto reservado correctamente.')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Reparte los roles' })).toBeVisible({
+      timeout: 15_000,
+    })
 
     const publicSurfaces = await page.evaluate(async () => {
       const request = indexedDB.open('impostorapp-platform')
@@ -115,6 +121,8 @@ test.describe('content catalog accessibility and privacy', () => {
       return {
         href: window.location.href,
         historyState: JSON.stringify(window.history.state),
+        sharedText: document.querySelector('[aria-label="Lista compartida de revelación"]')
+          ?.textContent,
         records,
         alerts: Array.from(document.querySelectorAll('[role="alert"]')).map(
           (element) => element.textContent,
@@ -123,12 +131,6 @@ test.describe('content catalog accessibility and privacy', () => {
     })
     expect(JSON.stringify(publicSurfaces)).not.toContain(secret)
     expect(publicSurfaces.records.length).toBeGreaterThan(0)
-
-    await page.getByLabel('Nombre', { exact: true }).fill('Inválida')
-    await page.getByLabel('Conceptos, uno por línea').fill(`${secret}\n${secret}`)
-    await page.getByRole('button', { name: 'Crear categoría' }).click()
-    await expect(page.getByRole('alert')).toBeVisible()
-    expect(await page.getByRole('alert').textContent()).not.toContain(secret)
   })
 
   test('keeps catalog, editor and long labels inside a 320px viewport', async ({ page }) => {

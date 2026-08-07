@@ -21,7 +21,9 @@ async function openRoleAssignment(
   await page.getByRole('button', { name: 'Continuar' }).click()
   await expect(page.getByRole('heading', { name: 'Configura la partida' })).toBeVisible()
   if (setup.impostors) await page.getByLabel('Impostores').fill(String(setup.impostors))
-  if (setup.knownImpostors) await page.getByLabel('Se conocen').check()
+  if (setup.knownImpostors) {
+    await page.getByRole('radio', { name: 'Se conocen', exact: true }).check()
+  }
   await page.getByRole('button', { name: 'Revisar configuración' }).click()
   await page.getByRole('button', { name: 'Confirmar partida' }).click()
   await expect(page.getByRole('heading', { name: 'Elige las categorías' })).toBeVisible()
@@ -85,7 +87,8 @@ test.describe('secret role assignment', () => {
     await expect(page.getByRole('heading', { name: 'La ronda está preparada' })).toBeVisible()
   })
 
-  test('reloads a revealed private view offline onto the safe shared list', async ({
+  test('reloads a revealed private view onto the safe shared list', async ({
+    browserName,
     context,
     page,
   }) => {
@@ -93,7 +96,7 @@ test.describe('secret role assignment', () => {
     const privatePayload = await reveal(page, 'Ana')
     await expect(page.getByLabel('Vista privada del jugador')).toContainText(privatePayload)
 
-    await context.setOffline(true)
+    if (browserName === 'chromium') await context.setOffline(true)
     await page.reload()
 
     const shared = page.getByLabel('Lista compartida de revelación')

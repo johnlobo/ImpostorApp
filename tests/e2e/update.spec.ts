@@ -124,7 +124,7 @@ async function seedDurableSnapshot(page: Page): Promise<void> {
   await page.evaluate(
     () =>
       new Promise<void>((resolve, reject) => {
-        const request = indexedDB.open('impostorapp-platform', 10)
+        const request = indexedDB.open('impostorapp-platform', 20)
         request.onupgradeneeded = () => {
           const database = request.result
           if (!database.objectStoreNames.contains('metadata')) {
@@ -140,6 +140,7 @@ async function seedDurableSnapshot(page: Page): Promise<void> {
             'custom-categories',
             'used-concepts',
             'preferences',
+            'role-assignment-history',
           ]) {
             if (!database.objectStoreNames.contains(collection)) {
               database.createObjectStore(collection, { keyPath: 'key' })
@@ -174,7 +175,7 @@ async function durableSnapshotRevision(page: Page): Promise<number | undefined> 
   return page.evaluate(
     () =>
       new Promise<number | undefined>((resolve, reject) => {
-        const request = indexedDB.open('impostorapp-platform', 10)
+        const request = indexedDB.open('impostorapp-platform', 20)
         request.onerror = () => reject(request.error ?? new Error('Could not open IndexedDB'))
         request.onsuccess = () => {
           const database = request.result

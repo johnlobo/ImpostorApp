@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 const databaseName = 'impostorapp-platform'
-const databaseVersion = 10
+const databaseVersion = 20
 const recoveryStore = 'recoverySnapshots'
 
 interface SnapshotFixture {
@@ -59,6 +59,7 @@ async function seedSnapshot(page: Page, value: SnapshotFixture): Promise<void> {
             'custom-categories',
             'used-concepts',
             'preferences',
+            'role-assignment-history',
           ]) {
             if (!database.objectStoreNames.contains(collection)) {
               database.createObjectStore(collection, { keyPath: 'key' })

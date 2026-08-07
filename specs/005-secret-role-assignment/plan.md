@@ -91,7 +91,7 @@ src/
   infrastructure/persistence/
     secretRoundRepository.ts
     migrations.ts            # extended with version 2 (role-assignment-history)
-  app/App.tsx                # wires RoleAssignmentScreen after ContentCatalogFlow
+  app/App.tsx                # wires SecretRoleAssignmentScreen after ContentCatalogFlow
   i18n/es.ts
 
 tests/
