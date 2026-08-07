@@ -1,5 +1,15 @@
-import { useReducer, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import {
+  isPreparedContentSelection,
+  type ContentCategory,
+  type PreparedContentSelection,
+} from '../domain/entities/contentCatalog'
+import { isPreparedGame, type PreparedGame } from '../domain/entities/gameConfiguration'
 import { prepareRoster, type PreparedRoster } from '../domain/entities/playerGroup'
+import { ContentCatalogScreen } from '../features/content-catalog/components/ContentCatalogScreen'
+import { ES_ADULT_CATALOG } from '../features/content-catalog/data/esAdultCatalog'
+import { ES_GENERAL_CATALOG } from '../features/content-catalog/data/esCatalog'
+import { useContentCatalog } from '../features/content-catalog/hooks/useContentCatalog'
 import { GameConfigurationScreen } from '../features/game-configuration/components/GameConfigurationScreen'
 import { useGameConfiguration } from '../features/game-configuration/hooks/useGameConfiguration'
 import { PlayerGroupsScreen } from '../features/player-groups/components/PlayerGroupsScreen'
@@ -14,6 +24,10 @@ import { useOfflineLifecycle } from '../features/platform/hooks/useOfflineLifecy
 import { useRecovery } from '../features/platform/hooks/useRecovery'
 import { appUpdateCoordinator } from '../features/platform/services/appUpdateRuntime'
 import {
+  conceptDrawRepository,
+  contentPreferencesRepository,
+  contentSelectionRepository,
+  customCategoriesRepository,
   gameConfigurationRepository,
   playerGroupsRepository,
   recoveryService,
@@ -22,16 +36,26 @@ import { translate } from '../i18n/translate'
 import { AppShell } from './AppShell'
 import { initialNavigationState, navigationReducer } from './navigation'
 
+const builtInCatalog: readonly ContentCategory[] = [...ES_GENERAL_CATALOG, ...ES_ADULT_CATALOG]
+
 function ConfigurationFlow({
   roster,
   readOnly,
   onBack,
+  onConfirmed,
 }: {
   roster: PreparedRoster
   readOnly: boolean
   onBack: () => void
+  onConfirmed: (game: PreparedGame) => void
 }) {
   const configuration = useGameConfiguration(roster, gameConfigurationRepository)
+
+  useEffect(() => {
+    if (configuration.state.status === 'confirmed' && configuration.state.confirmed) {
+      onConfirmed(configuration.state.confirmed)
+    }
+  }, [configuration.state.confirmed, configuration.state.status, onConfirmed])
 
   return (
     <GameConfigurationScreen
@@ -51,14 +75,61 @@ function ConfigurationFlow({
   )
 }
 
+function ContentCatalogFlow({
+  game,
+  readOnly,
+  onConfirmed,
+}: {
+  game: PreparedGame
+  readOnly: boolean
+  onConfirmed: (content: PreparedContentSelection) => void
+}) {
+  const dependencies = useMemo(
+    () => ({
+      game,
+      builtInCategories: builtInCatalog,
+      customCategoriesRepository,
+      preferencesRepository: contentPreferencesRepository,
+      selectionRepository: contentSelectionRepository,
+      drawRepository: conceptDrawRepository,
+      readOnly,
+    }),
+    [game, readOnly],
+  )
+  const controller = useContentCatalog(dependencies)
+  return <ContentCatalogScreen controller={controller} onConfirmed={onConfirmed} />
+}
+
 export function App() {
   const [navigation, dispatch] = useReducer(navigationReducer, initialNavigationState)
   const [configurationRoster, setConfigurationRoster] = useState<PreparedRoster | null>(null)
+  const [confirmedGame, setConfirmedGame] = useState<PreparedGame | null>(null)
+  const [, setConfirmedContent] = useState<PreparedContentSelection | null>(null)
   const offline = useOfflineLifecycle()
   const installation = useInstallPrompt()
   const update = useAppUpdate(appUpdateCoordinator)
   const recovery = useRecovery(recoveryService)
   const playerGroups = usePlayerGroups(playerGroupsRepository)
+
+  const snapshot =
+    recovery.state.status === 'ready' || recovery.state.status === 'observer'
+      ? recovery.state.snapshot
+      : null
+  const recoveredContent =
+    snapshot?.phase === 'content-selected' && isPreparedContentSelection(snapshot.payload)
+      ? snapshot.payload
+      : null
+  const recoveredGame =
+    snapshot?.phase === 'configured' && isPreparedGame(snapshot.payload)
+      ? snapshot.payload
+      : (recoveredContent?.game ?? null)
+  const activeGame = confirmedGame ?? recoveredGame
+  const handleGameConfirmed = useCallback((game: PreparedGame) => {
+    setConfirmedGame(game)
+  }, [])
+  const handleContentConfirmed = useCallback((content: PreparedContentSelection) => {
+    setConfirmedContent(content)
+  }, [])
 
   return (
     <AppShell onHelp={() => dispatch({ type: 'OPEN_HELP' })}>
@@ -84,11 +155,18 @@ export function App() {
             onRetryPreparation={offline.retryPreparation}
           />
           {(recovery.state.status === 'ready' || recovery.state.status === 'observer') &&
-            (configurationRoster ? (
+            (activeGame ? (
+              <ContentCatalogFlow
+                game={activeGame}
+                readOnly={recovery.state.status === 'observer'}
+                onConfirmed={handleContentConfirmed}
+              />
+            ) : configurationRoster ? (
               <ConfigurationFlow
                 roster={configurationRoster}
                 readOnly={recovery.state.status === 'observer'}
                 onBack={() => setConfigurationRoster(null)}
+                onConfirmed={handleGameConfirmed}
               />
             ) : (
               <PlayerGroupsScreen

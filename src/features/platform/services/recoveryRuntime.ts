@@ -3,6 +3,10 @@ import { BrowserWriterLeaseStore } from '../../../infrastructure/coordination/br
 import { createPersistenceDatabase } from '../../../infrastructure/persistence/database'
 import { DexiePersistenceGateway } from '../../../infrastructure/persistence/dexiePersistenceGateway'
 import { createPlayerGroupsRepository } from '../../../infrastructure/persistence/playerGroupsRepository'
+import { createCustomCategoriesRepository } from '../../../infrastructure/persistence/customCategoriesRepository'
+import { createContentPreferencesRepository } from '../../../infrastructure/persistence/contentPreferencesRepository'
+import { createContentSelectionRepository } from '../../../infrastructure/persistence/contentSelectionRepository'
+import { createConceptDrawRepository } from '../../../infrastructure/persistence/conceptDrawRepository'
 import { createGameConfigurationRepository } from '../../../infrastructure/persistence/gameConfigurationRepository'
 import { createRecoveryService } from './recoveryService'
 
@@ -33,6 +37,20 @@ export const recoveryService = createRecoveryService({ persistence, writer })
 export const playerGroupsRepository = createPlayerGroupsRepository(persistence)
 export const gameConfigurationRepository = createGameConfigurationRepository(
   persistence,
+  clock.nowIso,
+)
+export const customCategoriesRepository = createCustomCategoriesRepository(persistence)
+export const contentPreferencesRepository = createContentPreferencesRepository(
+  persistence,
+  clock.nowIso,
+)
+export const contentSelectionRepository = createContentSelectionRepository(
+  persistence,
+  clock.nowIso,
+)
+export const conceptDrawRepository = createConceptDrawRepository(
+  database,
+  () => writer.current().mode === 'writer',
   clock.nowIso,
 )
 

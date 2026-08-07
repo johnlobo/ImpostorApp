@@ -29,7 +29,7 @@ test.describe('game configuration', () => {
     await expect(page.getByRole('heading', { name: 'Revisa la partida' })).toBeVisible()
     await expect(page.getByText('120 segundos')).toBeVisible()
     await page.getByRole('button', { name: 'Confirmar partida' }).click()
-    await expect(page.getByText('La partida está configurada y guardada.')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Elige las categorías' })).toBeVisible()
   })
 
   test('returns to the unchanged prepared roster', async ({ page }) => {
