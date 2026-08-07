@@ -1,14 +1,19 @@
 import { useReducer } from 'react'
+import { PlayerGroupsScreen } from '../features/player-groups/components/PlayerGroupsScreen'
+import { usePlayerGroups } from '../features/player-groups/hooks/usePlayerGroups'
 import { InstallHelp } from '../features/platform/components/InstallHelp'
+import { OfflineStatus } from '../features/platform/components/OfflineStatus'
 import { RecoveryStatus } from '../features/platform/components/RecoveryStatus'
 import { UpdatePrompt } from '../features/platform/components/UpdatePrompt'
-import { OfflineStatus } from '../features/platform/components/OfflineStatus'
 import { useAppUpdate } from '../features/platform/hooks/useAppUpdate'
 import { useInstallPrompt } from '../features/platform/hooks/useInstallPrompt'
 import { useOfflineLifecycle } from '../features/platform/hooks/useOfflineLifecycle'
 import { useRecovery } from '../features/platform/hooks/useRecovery'
 import { appUpdateCoordinator } from '../features/platform/services/appUpdateRuntime'
-import { recoveryService } from '../features/platform/services/recoveryRuntime'
+import {
+  playerGroupsRepository,
+  recoveryService,
+} from '../features/platform/services/recoveryRuntime'
 import { translate } from '../i18n/translate'
 import { AppShell } from './AppShell'
 import { initialNavigationState, navigationReducer } from './navigation'
@@ -19,6 +24,8 @@ export function App() {
   const installation = useInstallPrompt()
   const update = useAppUpdate(appUpdateCoordinator)
   const recovery = useRecovery(recoveryService)
+  const playerGroups = usePlayerGroups(playerGroupsRepository)
+
   return (
     <AppShell onHelp={() => dispatch({ type: 'OPEN_HELP' })}>
       <RecoveryStatus
@@ -36,14 +43,33 @@ export function App() {
           </button>
         </div>
       ) : (
-        <section aria-labelledby="welcome-title">
-          <h2 id="welcome-title">{translate('app.tagline')}</h2>
+        <>
           <OfflineStatus
             state={offline.state}
             online={offline.online}
             onRetryPreparation={offline.retryPreparation}
           />
-        </section>
+          <PlayerGroupsScreen
+            state={playerGroups.state}
+            onAdd={(name) => playerGroups.apply({ type: 'add', name })}
+            onRename={(playerId, name) => playerGroups.apply({ type: 'rename', playerId, name })}
+            onRemove={(playerId) => playerGroups.apply({ type: 'remove', playerId })}
+            onMove={(playerId, direction) =>
+              playerGroups.apply({ type: 'move', playerId, direction })
+            }
+            onSaveGroup={(name) => {
+              void playerGroups.saveGroup(name)
+            }}
+            onLoadGroup={playerGroups.loadGroup}
+            onDeleteGroup={(groupId) => {
+              void playerGroups.deleteGroup(groupId)
+            }}
+            onPrepare={playerGroups.prepare}
+            onRetry={() => {
+              void playerGroups.retry()
+            }}
+          />
+        </>
       )}
     </AppShell>
   )
