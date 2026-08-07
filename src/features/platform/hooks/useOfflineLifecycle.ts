@@ -9,21 +9,33 @@ async function hasPreparedCache(): Promise<boolean> {
   return names.length > 0
 }
 
+async function waitForServiceWorkerControl(): Promise<void> {
+  if (!('serviceWorker' in navigator)) return
+  await navigator.serviceWorker.ready
+  if (navigator.serviceWorker.controller) return
+  await new Promise<void>((resolve) => {
+    navigator.serviceWorker.addEventListener('controllerchange', () => resolve(), { once: true })
+  })
+}
+
 export function useOfflineLifecycle() {
   const [state, dispatch] = useReducer(transitionOfflineLifecycle, { status: 'initializing' })
   const [online, setOnline] = useState(navigator.onLine)
 
   useEffect(() => {
     const connectivity = new BrowserConnectivity()
+    const markOfflineReady = () => {
+      void waitForServiceWorkerControl().then(() => dispatch({ type: 'OFFLINE_READY' }))
+    }
     const serviceWorker = registerAppServiceWorker({
-      onOfflineReady: () => dispatch({ type: 'OFFLINE_READY' }),
+      onOfflineReady: markOfflineReady,
       onUpdateAvailable: () => undefined,
       onRegistrationError: () =>
         dispatch({ type: 'PREPARATION_REQUIRED', online: navigator.onLine }),
     })
 
     void hasPreparedCache().then((ready) => {
-      if (ready) dispatch({ type: 'OFFLINE_READY' })
+      if (ready) markOfflineReady()
     })
 
     return connectivity.subscribe((nextOnline) => {
