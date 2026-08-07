@@ -6,7 +6,7 @@
 
 - [X] T001 Actualizar el puntero de feature en `.specify/feature.json`
 - [X] T002 [P] Registrar el contrato de configuracion en `specs/003-game-configuration/contracts/game-configuration.md`
-- [ ] T003 [P] Validar los escenarios de `specs/003-game-configuration/quickstart.md`
+- [X] T003 [P] Validar los escenarios de `specs/003-game-configuration/quickstart.md`
 
 ## Phase 2: Foundational
 
@@ -50,5 +50,5 @@
 
 - [X] T027 [P] Completar textos y estilos en `src/i18n/es.ts` y `src/styles/global.css`
 - [X] T028 [P] Añadir axe y overflow en `tests/accessibility/game-configuration.spec.ts`
-- [ ] T029 Ejecutar quickstart, quality gates, bundle y CI y registrar evidencia en `specs/003-game-configuration/checklists/implementation.md`
+- [X] T029 Ejecutar quickstart, quality gates, bundle y CI y registrar evidencia en `specs/003-game-configuration/checklists/implementation.md`
 - [ ] T030 Reconciliar tareas, PR, Pages y Jira IMP-22 a IMP-26
