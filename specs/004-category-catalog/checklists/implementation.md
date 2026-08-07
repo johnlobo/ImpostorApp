@@ -15,7 +15,7 @@
 - [X] `npm run build`
 - [X] Bundle: 114.4 KiB gzip de 180 KiB
 - [X] Playwright E2E y accesibilidad en CI
-- [ ] PR fusionada, Pages desplegada y Jira reconciliado
+- [X] PR fusionada, Pages desplegada y Jira reconciliado
 
 ## Local environment note
 
@@ -29,3 +29,7 @@ dependencias del navegador.
 - PR: https://github.com/johnlobo/ImpostorApp/pull/6
 - Workflow verde: https://github.com/johnlobo/ImpostorApp/actions/runs/31175982001
 - Jobs: quality 46 s, offline-smoke 51 s y E2E 2 min 37 s.
+- Merge en `main`: `380d835c20b97c5ccb0c49bf67b07d6904a5ed67`.
+- CI posterior al merge: 31176414795, verde.
+- Pages: https://johnlobo.github.io/ImpostorApp/ (workflow 31176622346).
+- Jira IMP-4 e IMP-27..IMP-31 en `Listo`.

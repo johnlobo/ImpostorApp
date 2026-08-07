@@ -7,7 +7,7 @@
 - [X] E2E, accesibilidad y overflow verdes en CI
 - [X] Bundle dentro del presupuesto
 - [X] Quickstart ejecutado
-- [ ] PR, despliegue y Jira reconciliados
+- [X] PR, despliegue y Jira reconciliados
 
 ## Evidence
 
@@ -15,3 +15,6 @@
 - Bundle: 106.47 KiB gzip of 180 KiB.
 - CI: run 31171579772; quality, E2E and offline smoke pass.
 - Browser matrix: 60 passed, 17 intentionally skipped; accessibility and mobile overflow included.
+- PR #5 fusionada en `2e725a04855fd18d07442b763f1c16cc243bbf26`.
+- `main` CI 31172466589 y Pages 31172618415 verdes.
+- Jira IMP-3 e IMP-22..IMP-26 en `Listo`.
