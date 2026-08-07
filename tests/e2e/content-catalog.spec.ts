@@ -50,12 +50,12 @@ test.describe('content catalog', () => {
   test('requires explicit confirmation before enabling adult content', async ({ page }) => {
     await openCatalog(page)
 
-    await page.getByLabel('Mostrar contenido adulto').check()
+    await page.getByLabel('Mostrar contenido adulto').click()
     const dialog = page.getByRole('dialog', { name: 'Activar contenido adulto' })
     await expect(dialog).toBeVisible()
     await dialog.getByRole('button', { name: 'Cancelar' }).click()
     await expect(page.getByLabel('Mostrar contenido adulto')).not.toBeChecked()
-    await page.getByLabel('Mostrar contenido adulto').check()
+    await page.getByLabel('Mostrar contenido adulto').click()
     await dialog.getByRole('button', { name: 'Activar' }).click()
     await expect(page.getByLabel('Mostrar contenido adulto')).toBeChecked()
   })

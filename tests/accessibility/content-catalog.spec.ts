@@ -9,9 +9,9 @@ async function openCatalog(page: Page): Promise<void> {
     await page.getByRole('button', { name: 'Añadir' }).click()
   }
   await page.getByRole('button', { name: 'Continuar' }).click()
-  await expect(page.getByRole('heading', { name: 'Configurar partida' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Configura la partida' })).toBeVisible()
   await page.getByRole('button', { name: 'Revisar configuración' }).click()
-  await page.getByRole('button', { name: 'Confirmar configuración' }).click()
+  await page.getByRole('button', { name: 'Confirmar partida' }).click()
   await expect(page.getByRole('heading', { name: 'Elige las categorías' })).toBeVisible()
 }
 
@@ -30,7 +30,7 @@ test.describe('content catalog accessibility and privacy', () => {
     await openCatalog(page)
     await expectAccessible(page)
 
-    await page.getByLabel('Mostrar contenido adulto').check()
+    await page.getByLabel('Mostrar contenido adulto').click()
     await expect(page.getByRole('dialog', { name: 'Activar contenido adulto' })).toBeVisible()
     await expectAccessible(page)
     await page.getByRole('button', { name: 'Cancelar' }).click()
@@ -70,7 +70,7 @@ test.describe('content catalog accessibility and privacy', () => {
     await page.keyboard.press('Tab')
     await expect(page.getByRole('button', { name: 'Crear categoría' })).toBeFocused()
     await page.keyboard.press('Enter')
-    await expect(page.getByText('Teclado (3)')).toBeVisible()
+    await expect(page.getByText('Teclado, 3 conceptos')).toBeVisible()
   })
 
   test('keeps secret concept text out of URL, public errors and durable history', async ({
@@ -81,12 +81,12 @@ test.describe('content catalog accessibility and privacy', () => {
     await page.getByLabel('Nombre', { exact: true }).fill('Privada')
     await page.getByLabel('Conceptos, uno por línea').fill(`${secret}\nSegundo\nTercero`)
     await page.getByRole('button', { name: 'Crear categoría' }).click()
-    await expect(page.getByText('Privada (3)')).toBeVisible()
+    await expect(page.getByText('Privada, 3 conceptos')).toBeVisible()
 
     await page.getByLabel('Elegir categorías').check()
     const categoryFieldset = page.getByRole('group', { name: 'Categorías' })
     const categoryChecks = categoryFieldset.getByRole('checkbox')
-    await categoryFieldset.getByLabel('Privada (3)').check()
+    await categoryFieldset.getByLabel('Privada, 3 conceptos').check()
     for (let index = 0; index < (await categoryChecks.count()); index += 1) {
       const checkbox = categoryChecks.nth(index)
       const label = await checkbox.evaluate((element) => element.parentElement?.textContent ?? '')
@@ -96,9 +96,7 @@ test.describe('content catalog accessibility and privacy', () => {
     await page.getByRole('button', { name: 'Confirmar contenido' }).click()
     await expect(page.getByRole('heading', { name: 'Contenido preparado' })).toBeVisible()
     await page.getByRole('button', { name: 'Extraer concepto' }).click()
-    await expect(
-      page.getByRole('status', { name: 'Concepto reservado correctamente.' }),
-    ).toBeVisible()
+    await expect(page.getByText('Concepto reservado correctamente.')).toBeVisible()
 
     const publicSurfaces = await page.evaluate(async () => {
       const request = indexedDB.open('impostorapp-platform')
