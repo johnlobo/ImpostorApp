@@ -227,3 +227,138 @@ button:disabled {
     grid-column: 2;
   }
 }
+
+.game-configuration {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+.step-indicator {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+.configuration-fields {
+  display: grid;
+  gap: 1rem;
+}
+.configuration-fields fieldset {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+.configuration-fields legend,
+.rule-group > span {
+  font-weight: 700;
+}
+.numeric-rules {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.numeric-rules label,
+.timer-control label,
+.rule-group {
+  display: grid;
+  gap: 0.5rem;
+}
+.numeric-rules input,
+.timer-control input {
+  width: 100%;
+  min-height: var(--tap-target);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.65rem 0.75rem;
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
+}
+.segmented-control,
+.preset-actions,
+.configuration-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.choice {
+  position: relative;
+  flex: 1 1 8rem;
+}
+.choice input {
+  position: absolute;
+  opacity: 0;
+}
+.choice span {
+  display: grid;
+  min-height: var(--tap-target);
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  text-align: center;
+  background: var(--surface);
+}
+.choice input:checked + span {
+  border-color: #176b52;
+  box-shadow: inset 0 0 0 2px #176b52;
+  font-weight: 700;
+}
+.choice input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.choice input:disabled + span {
+  opacity: 0.5;
+}
+.toggle-control {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap-target);
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.toggle-control input {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.timer-control,
+.configuration-summary,
+.configuration-summary section,
+.configuration-summary dl,
+.rule-group {
+  display: grid;
+  gap: 0.75rem;
+}
+.configuration-summary {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.configuration-summary h3,
+.configuration-summary ol,
+.configuration-summary dl,
+.configuration-summary dd {
+  margin: 0;
+}
+.configuration-summary dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-block: 0.5rem;
+}
+.configuration-summary dd {
+  text-align: right;
+  font-weight: 700;
+}
+.configuration-actions {
+  justify-content: flex-end;
+}
+@media (max-width: 420px) {
+  .numeric-rules,
+  .configuration-summary {
+    grid-template-columns: 1fr;
+  }
+  .configuration-actions > button {
+    flex: 1 1 0;
+  }
+}
