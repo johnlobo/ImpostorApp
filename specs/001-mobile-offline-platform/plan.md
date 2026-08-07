@@ -17,7 +17,7 @@ el proyecto y publicará la rama principal en GitHub Pages.
 
 **Language/Version**: TypeScript 5.9 en modo estricto; Node.js 24 LTS para desarrollo y CI
 
-**Primary Dependencies**: React 19.2, Vite 8.2, `vite-plugin-pwa` 1.2 y Dexie 4.x. Sin router,
+**Primary Dependencies**: React 19.2, Vite 8.2, `vite-plugin-pwa` 1.3 y Dexie 4.x. Sin router,
 biblioteca de estado global ni kit visual en esta fase
 
 **Storage**: IndexedDB mediante Dexie para datos versionados y transaccionales; Cache Storage

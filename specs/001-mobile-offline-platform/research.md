@@ -28,7 +28,7 @@ sin introducir un metaframework o servidor.
 
 ## Decision 2: PWA generation and controlled updates
 
-**Decision**: Usar `vite-plugin-pwa` 1.2 con `generateSW`, precaché de todos los recursos compilados
+**Decision**: Usar `vite-plugin-pwa` 1.3 con `generateSW`, precaché de todos los recursos compilados
 y comportamiento de actualización solicitado, no recarga automática.
 
 **Rationale**: El plugin genera manifest, service worker y registro con una configuración pequeña.

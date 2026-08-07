@@ -4,7 +4,7 @@
 
 **Created**: 2026-08-07
 
-**Status**: Draft
+**Status**: Approved
 
 **Jira Epic**: `IMP-1`
 
@@ -182,9 +182,9 @@ después en un punto seguro.
 
 - **SC-001**: El 100 % de los recorridos funcionales disponibles en una versión puede completarse en
   modo avión después de una primera carga correcta.
-- **SC-002**: En pruebas con dispositivos compatibles, al menos 9 de cada 10 participantes pueden
-  instalar la aplicación y abrirla desde la pantalla de inicio en menos de 2 minutos sin ayuda
-  directa.
+- **SC-002**: En una prueba con al menos 10 participantes y dispositivos compatibles, al menos
+  9 de cada 10 pueden instalar la aplicación y abrirla desde la pantalla de inicio en menos de 2
+  minutos sin ayuda directa.
 - **SC-003**: La pantalla inicial queda disponible en menos de 3 segundos en al menos el 95 % de las
   aperturas offline realizadas en los dispositivos representativos de prueba.
 - **SC-004**: El 100 % de los escenarios de cierre forzado, reinicio y actualización de la matriz de
