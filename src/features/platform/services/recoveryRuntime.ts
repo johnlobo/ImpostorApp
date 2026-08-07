@@ -3,6 +3,7 @@ import { BrowserWriterLeaseStore } from '../../../infrastructure/coordination/br
 import { createPersistenceDatabase } from '../../../infrastructure/persistence/database'
 import { DexiePersistenceGateway } from '../../../infrastructure/persistence/dexiePersistenceGateway'
 import { createPlayerGroupsRepository } from '../../../infrastructure/persistence/playerGroupsRepository'
+import { createGameConfigurationRepository } from '../../../infrastructure/persistence/gameConfigurationRepository'
 import { createRecoveryService } from './recoveryService'
 
 const clock = {
@@ -30,6 +31,10 @@ const persistence = new DexiePersistenceGateway(database, {
 
 export const recoveryService = createRecoveryService({ persistence, writer })
 export const playerGroupsRepository = createPlayerGroupsRepository(persistence)
+export const gameConfigurationRepository = createGameConfigurationRepository(
+  persistence,
+  clock.nowIso,
+)
 
 if (typeof window !== 'undefined') {
   window.setInterval(() => {

@@ -25,7 +25,8 @@ test.describe('player and saved-group management', () => {
     await expect(names.nth(2)).toHaveValue('Bruno')
 
     await page.getByRole('button', { name: 'Continuar' }).click()
-    await expect(page.getByText('Lista preparada con 3 jugadores.')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Configura la partida' })).toBeVisible()
+    await page.getByRole('button', { name: 'Volver a jugadores' }).click()
 
     await page.getByRole('button', { name: 'Eliminar a Bruno' }).click()
     await expect(page.getByRole('button', { name: 'Continuar' })).toBeDisabled()
