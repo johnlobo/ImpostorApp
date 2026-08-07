@@ -256,11 +256,11 @@ test.describe('controlled two-version update', () => {
     await setSimulatedGameState(page, false)
 
     await expect(prompt).toHaveAttribute('data-state', 'available')
+    const reloaded = page.waitForEvent('load')
     await page.getByRole('button', { name: 'Aplicar actualización' }).click()
+    await reloaded
 
-    await expect
-      .poll(() => page.evaluate(() => sessionStorage.getItem('impostor-e2e-boots')))
-      .toBe('2')
+    expect(await page.evaluate(() => sessionStorage.getItem('impostor-e2e-boots'))).toBe('2')
     await page.waitForTimeout(500)
     expect(await page.evaluate(() => sessionStorage.getItem('impostor-e2e-boots'))).toBe('2')
     await expect.poll(() => durableSnapshotRevision(page)).toBe(8)
