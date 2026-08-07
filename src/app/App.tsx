@@ -1,10 +1,13 @@
 import { useReducer } from 'react'
+import { OfflineStatus } from '../features/platform/components/OfflineStatus'
+import { useOfflineLifecycle } from '../features/platform/hooks/useOfflineLifecycle'
 import { translate } from '../i18n/translate'
 import { AppShell } from './AppShell'
 import { initialNavigationState, navigationReducer } from './navigation'
 
 export function App() {
   const [navigation, dispatch] = useReducer(navigationReducer, initialNavigationState)
+  const offline = useOfflineLifecycle()
   return (
     <AppShell onHelp={() => dispatch({ type: 'OPEN_HELP' })}>
       {navigation.screen === 'help' ? (
@@ -18,7 +21,11 @@ export function App() {
       ) : (
         <section aria-labelledby="welcome-title">
           <h2 id="welcome-title">{translate('app.tagline')}</h2>
-          <p className="muted">{translate('platform.initializing')}</p>
+          <OfflineStatus
+            state={offline.state}
+            online={offline.online}
+            onRetryPreparation={offline.retryPreparation}
+          />
         </section>
       )}
     </AppShell>

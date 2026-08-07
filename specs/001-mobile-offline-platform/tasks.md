@@ -61,18 +61,18 @@ description: "Implementation tasks for IMP-1 mobile installable offline platform
 
 ### Tests for User Story 1
 
-- [ ] T015 [P] [US1] Write failing lifecycle unit tests for first-load, offline-ready, degraded, connectivity-change, and retry transitions in `src/features/platform/services/offlineLifecycle.test.ts`
-- [ ] T016 [P] [US1] Write failing component tests for readiness, first-load-required, and storage failure messages and actions in `src/features/platform/components/OfflineStatus.test.tsx`
-- [ ] T017 [P] [US1] Write failing production-build E2E tests for precache completion, interrupted first load, offline reopening, and detection plus safe recovery when a previously prepared cache is removed in `tests/e2e/offline.spec.ts`
+- [X] T015 [P] [US1] Write failing lifecycle unit tests for first-load, offline-ready, degraded, connectivity-change, and retry transitions in `src/features/platform/services/offlineLifecycle.test.ts`
+- [X] T016 [P] [US1] Write failing component tests for readiness, first-load-required, and storage failure messages and actions in `src/features/platform/components/OfflineStatus.test.tsx`
+- [X] T017 [P] [US1] Write failing production-build E2E tests for precache completion, interrupted first load, offline reopening, and detection plus safe recovery when a previously prepared cache is removed in `tests/e2e/offline.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T018 [US1] Configure `vite-plugin-pwa` generateSW precaching, prompt registration, repository base path, and offline manifest assets in `vite.config.ts`
-- [ ] T019 [P] [US1] Implement connectivity observation without navigation or session interruption in `src/infrastructure/pwa/browserConnectivity.ts`
-- [ ] T020 [US1] Implement the offline lifecycle state machine and public recovery actions in `src/features/platform/services/offlineLifecycle.ts`
-- [ ] T021 [US1] Connect service-worker registration events and cache readiness to the lifecycle port in `src/infrastructure/pwa/registerServiceWorker.ts`
-- [ ] T022 [US1] Build the accessible readiness, degraded-mode, and first-load recovery UI in `src/features/platform/components/OfflineStatus.tsx` and `src/features/platform/hooks/useOfflineLifecycle.ts`
-- [ ] T023 [US1] Integrate offline lifecycle state into the application shell without network-dependent runtime calls in `src/app/App.tsx`
+- [X] T018 [US1] Configure `vite-plugin-pwa` generateSW precaching, prompt registration, repository base path, and offline manifest assets in `vite.config.ts`
+- [X] T019 [P] [US1] Implement connectivity observation without navigation or session interruption in `src/infrastructure/pwa/browserConnectivity.ts`
+- [X] T020 [US1] Implement the offline lifecycle state machine and public recovery actions in `src/features/platform/services/offlineLifecycle.ts`
+- [X] T021 [US1] Connect service-worker registration events and cache readiness to the lifecycle port in `src/infrastructure/pwa/registerServiceWorker.ts`
+- [X] T022 [US1] Build the accessible readiness, degraded-mode, and first-load recovery UI in `src/features/platform/components/OfflineStatus.tsx` and `src/features/platform/hooks/useOfflineLifecycle.ts`
+- [X] T023 [US1] Integrate offline lifecycle state into the application shell without network-dependent runtime calls in `src/app/App.tsx`
 
 **Checkpoint**: US1 passes independently against a production build with online/offline transitions and no required runtime request.
 
