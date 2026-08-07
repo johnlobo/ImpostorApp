@@ -63,7 +63,7 @@ never downloads content.
 | adultContentEnabled | boolean | Effective preference at confirmation |
 | createdAt | ISO timestamp | Injected confirmation clock |
 
-It is persisted in `RecoverySnapshot` with phase `content-selected`. It contains no selected concept,
+It is persisted in `RecoverySnapshot` with phase `content-selected`. A valid prior `configured` snapshot supplies the base revision with nullable content until this selection is confirmed. It contains no selected concept,
 role assignment, vote or round result.
 
 ## ConceptHistory

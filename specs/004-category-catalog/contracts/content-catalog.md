@@ -114,7 +114,7 @@ automatically. `reset` requires explicit confirmation and atomically empties the
 
 ```ts
 interface PreparedContentSelectionRepository {
-  load(): Promise<StorageResult<{ content: PreparedContentSelection; revision: number } | null>>
+  load(): Promise<StorageResult<{ content: PreparedContentSelection | null; revision: number } | null>>
   save(
     content: PreparedContentSelection,
     expectedRevision: number,
@@ -122,7 +122,8 @@ interface PreparedContentSelectionRepository {
 }
 ```
 
-- Maps to the existing recovery record with phase `content-selected`.
+- Loads a valid prior `configured` snapshot as `{ content: null, revision }` so confirmation can advance its revision.
+- Maps a confirmed selection to the existing recovery record with phase `content-selected`.
 - Preserves the `PreparedGame` value and increments the expected revision exactly once.
 - Adds no table or migration.
 - Rejects malformed, future or mismatched game payloads before replacing active state.
