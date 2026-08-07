@@ -7,10 +7,19 @@ export interface ServiceWorkerLifecycleCallbacks {
 }
 
 let activateUpdate: (() => Promise<void>) | undefined
+let reloadRequested = false
 
 export async function activateRegisteredUpdate(): Promise<void> {
   if (!activateUpdate) throw new Error('Service worker is not registered')
-  await activateUpdate()
+  if (reloadRequested) return
+  reloadRequested = true
+  try {
+    await activateUpdate()
+    window.location.reload()
+  } catch (error) {
+    reloadRequested = false
+    throw error
+  }
 }
 
 export interface ServiceWorkerRegistrationHandle {
