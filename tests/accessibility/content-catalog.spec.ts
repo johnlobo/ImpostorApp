@@ -70,7 +70,7 @@ test.describe('content catalog accessibility and privacy', () => {
     await page.keyboard.press('Tab')
     await expect(page.getByRole('button', { name: 'Crear categoría' })).toBeFocused()
     await page.keyboard.press('Enter')
-    await expect(page.getByText('Teclado, 3 conceptos')).toBeVisible()
+    await expect(page.getByText('Teclado, 3 conceptos').first()).toBeVisible()
   })
 
   test('keeps secret concept text out of URL, public errors and durable history', async ({
