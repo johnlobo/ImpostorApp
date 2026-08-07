@@ -6,6 +6,13 @@ export interface ServiceWorkerLifecycleCallbacks {
   onRegistrationError: (error: unknown) => void
 }
 
+let activateUpdate: (() => Promise<void>) | undefined
+
+export async function activateRegisteredUpdate(): Promise<void> {
+  if (!activateUpdate) throw new Error('Service worker is not registered')
+  await activateUpdate()
+}
+
 export interface ServiceWorkerRegistrationHandle {
   applyUpdate: () => Promise<void>
   checkForUpdate: () => Promise<void>
@@ -25,8 +32,10 @@ export function registerAppServiceWorker(
     },
   })
 
+  activateUpdate = () => updateServiceWorker(true)
+
   return {
-    applyUpdate: () => updateServiceWorker(true),
+    applyUpdate: activateUpdate,
     checkForUpdate: async () => {
       await registration?.update()
     },

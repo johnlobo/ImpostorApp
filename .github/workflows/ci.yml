@@ -23,6 +23,24 @@ jobs:
       - run: npm run typecheck
       - run: npm run test
       - run: npm run build
+      - name: Enforce compressed bundle budget
+        run: node scripts/check-bundle-size.mjs
+
+  offline-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Reopen the prepared app offline
+        run: >-
+          npx playwright test tests/e2e/offline.spec.ts
+          --project=chromium-pwa
+          --grep "reloads a prepared production build with no network"
 
   e2e:
     runs-on: ubuntu-latest

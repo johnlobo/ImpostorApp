@@ -86,17 +86,17 @@ description: "Implementation tasks for IMP-1 mobile installable offline platform
 
 ### Tests for User Story 2
 
-- [ ] T024 [P] [US2] Write failing component tests for iOS, Android, unsupported, and already-installed help states in `src/features/platform/components/InstallHelp.test.tsx`
-- [ ] T025 [P] [US2] Write failing manifest and standalone presentation checks in `tests/e2e/installability.spec.ts`
-- [ ] T026 [P] [US2] Write failing accessibility and narrow portrait viewport checks for install flows in `tests/accessibility/install-help.spec.ts`
+- [X] T024 [P] [US2] Write failing component tests for iOS, Android, unsupported, and already-installed help states in `src/features/platform/components/InstallHelp.test.tsx`
+- [X] T025 [P] [US2] Write failing manifest and standalone presentation checks in `tests/e2e/installability.spec.ts`
+- [X] T026 [P] [US2] Write failing accessibility and narrow portrait viewport checks for install flows in `tests/accessibility/install-help.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T027 [P] [US2] Add maskable and Apple touch application icons and icon source documentation in `public/icons/` and `public/icons/README.md`
-- [ ] T028 [US2] Complete the Spanish PWA manifest, theme metadata, standalone display, and Apple mobile metadata in `vite.config.ts` and `index.html` after T018 establishes the shared PWA configuration
-- [ ] T029 [US2] Implement capability-based installation detection and install-prompt handling in `src/infrastructure/pwa/installCapability.ts`
-- [ ] T030 [US2] Build device-appropriate accessible installation help and fallback messaging in `src/features/platform/components/InstallHelp.tsx` and `src/features/platform/hooks/useInstallPrompt.ts`
-- [ ] T031 [US2] Expose installation help from the shared application shell in `src/app/AppShell.tsx`
+- [X] T027 [P] [US2] Add maskable and Apple touch application icons and icon source documentation in `public/icons/` and `public/icons/README.md`
+- [X] T028 [US2] Complete the Spanish PWA manifest, theme metadata, standalone display, and Apple mobile metadata in `vite.config.ts` and `index.html` after T018 establishes the shared PWA configuration
+- [X] T029 [US2] Implement capability-based installation detection and install-prompt handling in `src/infrastructure/pwa/installCapability.ts`
+- [X] T030 [US2] Build device-appropriate accessible installation help and fallback messaging in `src/features/platform/components/InstallHelp.tsx` and `src/features/platform/hooks/useInstallPrompt.ts`
+- [X] T031 [US2] Expose installation help from the shared application shell in `src/app/AppShell.tsx`
 
 **Checkpoint**: US2 is independently installable and usable in portrait, with clear fallback guidance when installation cannot be prompted.
 
@@ -110,19 +110,19 @@ description: "Implementation tasks for IMP-1 mobile installable offline platform
 
 ### Tests for User Story 3
 
-- [ ] T032 [P] [US3] Write failing persistence contract tests for initialization, collections, revision conflicts, atomic snapshots, explicit clearing, and public errors in `tests/integration/persistenceGateway.spec.ts`
-- [ ] T033 [P] [US3] Write failing migration rollback and future-schema safe-mode tests with fake IndexedDB in `tests/integration/persistenceMigrations.spec.ts`
-- [ ] T034 [P] [US3] Write failing multi-tab writer/observer handoff tests in `tests/integration/writerCoordination.spec.ts`
-- [ ] T035 [P] [US3] Write failing E2E tests for close recovery, interrupted writes, storage failures, browser- or OS-initiated IndexedDB removal or unavailability, and explicit user-confirmed data deletion in `tests/e2e/recovery.spec.ts`
+- [X] T032 [P] [US3] Write failing persistence contract tests for initialization, collections, revision conflicts, atomic snapshots, explicit clearing, and public errors in `tests/integration/persistenceGateway.spec.ts`
+- [X] T033 [P] [US3] Write failing migration rollback and future-schema safe-mode tests with fake IndexedDB in `tests/integration/persistenceMigrations.spec.ts`
+- [X] T034 [P] [US3] Write failing multi-tab writer/observer handoff tests in `tests/integration/writerCoordination.spec.ts`
+- [X] T035 [P] [US3] Write failing E2E tests for close recovery, interrupted writes, storage failures, browser- or OS-initiated IndexedDB removal or unavailability, and explicit user-confirmed data deletion in `tests/e2e/recovery.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T036 [P] [US3] Define Dexie tables, indexes, current schema, and transactional migrations in `src/infrastructure/persistence/database.ts` and `src/infrastructure/persistence/migrations.ts`
-- [ ] T037 [US3] Implement the persistence gateway with atomic revision checks, typed error mapping, and payload-safe diagnostics in `src/infrastructure/persistence/dexiePersistenceGateway.ts`
-- [ ] T038 [P] [US3] Implement exclusive writer lease acquisition, observer fallback, heartbeat, and safe handoff in `src/infrastructure/coordination/writerLease.ts`
-- [ ] T039 [US3] Implement recovery orchestration that initializes storage and exposes the last confirmed snapshot or safe mode in `src/features/platform/services/recoveryService.ts`
-- [ ] T040 [US3] Build accessible recovery, observer-mode, storage-full, incompatibility, and confirmed data-deletion UI in `src/features/platform/components/RecoveryStatus.tsx`
-- [ ] T041 [US3] Compose persistence, writer coordination, and recovery state into application startup in `src/app/App.tsx`
+- [X] T036 [P] [US3] Define Dexie tables, indexes, current schema, and transactional migrations in `src/infrastructure/persistence/database.ts` and `src/infrastructure/persistence/migrations.ts`
+- [X] T037 [US3] Implement the persistence gateway with atomic revision checks, typed error mapping, and payload-safe diagnostics in `src/infrastructure/persistence/dexiePersistenceGateway.ts`
+- [X] T038 [P] [US3] Implement exclusive writer lease acquisition, observer fallback, heartbeat, and safe handoff in `src/infrastructure/coordination/writerLease.ts`
+- [X] T039 [US3] Implement recovery orchestration that initializes storage and exposes the last confirmed snapshot or safe mode in `src/features/platform/services/recoveryService.ts`
+- [X] T040 [US3] Build accessible recovery, observer-mode, storage-full, incompatibility, and confirmed data-deletion UI in `src/features/platform/components/RecoveryStatus.tsx`
+- [X] T041 [US3] Compose persistence, writer coordination, and recovery state into application startup in `src/app/App.tsx`
 
 **Checkpoint**: US3 recovers only durable data, never silently clears incompatible state, and permits writes from one proven owner only.
 
@@ -136,16 +136,16 @@ description: "Implementation tasks for IMP-1 mobile installable offline platform
 
 ### Tests for User Story 4
 
-- [ ] T042 [P] [US4] Write failing unit tests for update available, active-game deferral, durable-state guard, apply-once, and failed-update transitions in `src/features/platform/services/updateCoordinator.test.ts`
-- [ ] T043 [P] [US4] Write failing component tests for postpone, safe apply, applying, and failed-update actions in `src/features/platform/components/UpdatePrompt.test.tsx`
-- [ ] T044 [P] [US4] Write failing two-version E2E tests for interrupted downloads, active-game deferral, single reload, and data preservation in `tests/e2e/update.spec.ts`
+- [X] T042 [P] [US4] Write failing unit tests for update available, active-game deferral, durable-state guard, apply-once, and failed-update transitions in `src/features/platform/services/updateCoordinator.test.ts`
+- [X] T043 [P] [US4] Write failing component tests for postpone, safe apply, applying, and failed-update actions in `src/features/platform/components/UpdatePrompt.test.tsx`
+- [X] T044 [P] [US4] Write failing two-version E2E tests for interrupted downloads, active-game deferral, single reload, and data preservation in `tests/e2e/update.spec.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T045 [US4] Implement update coordination with active-game and durable-snapshot guards in `src/features/platform/services/updateCoordinator.ts`
-- [ ] T046 [US4] Extend service-worker registration with complete-update notification, explicit activation, and apply-once protection in `src/infrastructure/pwa/registerServiceWorker.ts`
-- [ ] T047 [US4] Build the accessible non-modal update prompt and safe-point actions in `src/features/platform/components/UpdatePrompt.tsx` and `src/features/platform/hooks/useAppUpdate.ts`
-- [ ] T048 [US4] Integrate update availability and application into the shared shell without automatic active-game reloads in `src/app/App.tsx`
+- [X] T045 [US4] Implement update coordination with active-game and durable-snapshot guards in `src/features/platform/services/updateCoordinator.ts`
+- [X] T046 [US4] Extend service-worker registration with complete-update notification, explicit activation, and apply-once protection in `src/infrastructure/pwa/registerServiceWorker.ts`
+- [X] T047 [US4] Build the accessible non-modal update prompt and safe-point actions in `src/features/platform/components/UpdatePrompt.tsx` and `src/features/platform/hooks/useAppUpdate.ts`
+- [X] T048 [US4] Integrate update availability and application into the shared shell without automatic active-game reloads in `src/app/App.tsx`
 
 **Checkpoint**: US4 preserves the running version and durable data until an update is complete and explicitly safe to activate.
 
@@ -155,9 +155,9 @@ description: "Implementation tasks for IMP-1 mobile installable offline platform
 
 **Purpose**: Verify delivery, performance, accessibility, privacy, and real-device behavior across all stories.
 
-- [ ] T049 [P] Add automated axe checks for the shared shell and all platform states in `tests/accessibility/platform.spec.ts`
-- [ ] T050 [P] Add bundle-size and production offline smoke checks to CI in `scripts/check-bundle-size.mjs` and `.github/workflows/ci.yml`
-- [ ] T051 [P] Document supported browsers, local quality commands, PWA production validation, and data-loss limitations in `README.md`
+- [X] T049 [P] Add automated axe checks for the shared shell and all platform states in `tests/accessibility/platform.spec.ts`
+- [X] T050 [P] Add bundle-size and production offline smoke checks to CI in `scripts/check-bundle-size.mjs` and `.github/workflows/ci.yml`
+- [X] T051 [P] Document supported browsers, local quality commands, PWA production validation, and data-loss limitations in `README.md`
 - [ ] T052 Execute and record all automated quickstart scenarios A-E in `specs/001-mobile-offline-platform/checklists/quickstart-results.md`
 - [ ] T053 Execute and record the iPhone and Android installation matrix, portrait overflow checks, and offline-open timings in `specs/001-mobile-offline-platform/checklists/device-matrix.md`, then run the installation usability protocol with at least 10 participants and record device, browser, duration, success, and help received in `specs/001-mobile-offline-platform/checklists/installation-usability.md`
 - [ ] T054 Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build`, and `npm run test:e2e`, then record final IMP-1 requirement and constitution traceability in `specs/001-mobile-offline-platform/checklists/implementation.md`
