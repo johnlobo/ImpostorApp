@@ -9,6 +9,7 @@ import { createContentSelectionRepository } from '../../../infrastructure/persis
 import { createConceptDrawRepository } from '../../../infrastructure/persistence/conceptDrawRepository'
 import { createGameConfigurationRepository } from '../../../infrastructure/persistence/gameConfigurationRepository'
 import { createSecretRoundRepository } from '../../../infrastructure/persistence/secretRoundRepository'
+import { createRoundSessionRepository } from '../../../infrastructure/persistence/roundSessionRepository'
 import { createRecoveryService } from './recoveryService'
 
 const clock = {
@@ -54,7 +55,14 @@ export const conceptDrawRepository = createConceptDrawRepository(
   () => writer.current().mode === 'writer',
   clock.nowIso,
 )
+
 export const secretRoundRepository = createSecretRoundRepository(
+  database,
+  { hasWriterLease: () => writer.current().mode === 'writer' },
+  clock.nowIso,
+)
+
+export const roundSessionRepository = createRoundSessionRepository(
   database,
   { hasWriterLease: () => writer.current().mode === 'writer' },
   clock.nowIso,

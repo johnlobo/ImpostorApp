@@ -84,7 +84,7 @@ test.describe('secret role assignment', () => {
     const start = page.getByRole('button', { name: 'Empezar ronda' })
     await expect(start).toBeEnabled()
     await start.click()
-    await expect(page.getByRole('heading', { name: 'La ronda está preparada' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Comenzar pistas' })).toBeVisible()
   })
 
   test('reloads a revealed private view onto the safe shared list', async ({
