@@ -6,6 +6,7 @@ import {
 } from '../domain/entities/contentCatalog'
 import { isPreparedGame, type PreparedGame } from '../domain/entities/gameConfiguration'
 import { prepareRoster, type PreparedRoster } from '../domain/entities/playerGroup'
+import type { CluePhaseHandoff } from '../domain/entities/roundSession'
 import { isSecretRoundSnapshot, type RoundHandoff } from '../domain/entities/secretRoleAssignment'
 import { ContentCatalogScreen } from '../features/content-catalog/components/ContentCatalogScreen'
 import { ES_ADULT_CATALOG } from '../features/content-catalog/data/esAdultCatalog'
@@ -17,6 +18,8 @@ import { PlayerGroupsScreen } from '../features/player-groups/components/PlayerG
 import { usePlayerGroups } from '../features/player-groups/hooks/usePlayerGroups'
 import { SecretRoleAssignmentScreen } from '../features/secret-role-assignment/components/SecretRoleAssignmentScreen'
 import { useSecretRoleAssignment } from '../features/secret-role-assignment/hooks/useSecretRoleAssignment'
+import { RoundSessionScreen } from '../features/round-session/components/RoundSessionScreen'
+import { useRoundSession } from '../features/round-session/hooks/useRoundSession'
 import { InstallHelp } from '../features/platform/components/InstallHelp'
 import { OfflineStatus } from '../features/platform/components/OfflineStatus'
 import { RecoveryStatus } from '../features/platform/components/RecoveryStatus'
@@ -34,6 +37,7 @@ import {
   gameConfigurationRepository,
   playerGroupsRepository,
   recoveryService,
+  roundSessionRepository,
   secretRoundRepository,
 } from '../features/platform/services/recoveryRuntime'
 import { translate } from '../i18n/translate'
@@ -121,12 +125,26 @@ function RoleAssignmentFlow({
   return <SecretRoleAssignmentScreen controller={controller} onStart={onStart} />
 }
 
+function RoundSessionFlow({
+  handoff,
+  readOnly,
+  onClosed,
+}: {
+  handoff?: RoundHandoff
+  readOnly: boolean
+  onClosed: (handoff: CluePhaseHandoff) => void
+}) {
+  const controller = useRoundSession(roundSessionRepository, readOnly, handoff)
+  return <RoundSessionScreen controller={controller} onClosed={onClosed} />
+}
+
 export function App() {
   const [navigation, dispatch] = useReducer(navigationReducer, initialNavigationState)
   const [configurationRoster, setConfigurationRoster] = useState<PreparedRoster | null>(null)
   const [confirmedGame, setConfirmedGame] = useState<PreparedGame | null>(null)
   const [confirmedContent, setConfirmedContent] = useState<PreparedContentSelection | null>(null)
   const [roundHandoff, setRoundHandoff] = useState<RoundHandoff | null>(null)
+  const [, setCluePhaseHandoff] = useState<CluePhaseHandoff | null>(null)
   const offline = useOfflineLifecycle()
   const installation = useInstallPrompt()
   const update = useAppUpdate(appUpdateCoordinator)
@@ -194,10 +212,16 @@ export function App() {
                 <p>{translate('recovery.dataPreserved')}</p>
               </main>
             ) : roundHandoff ? (
-              <main className="status-message success-message" role="status">
-                <h2>{translate('roles.roundReady')}</h2>
-                <p>{translate('roles.roundReady.detail')}</p>
-              </main>
+              <RoundSessionFlow
+                handoff={roundHandoff}
+                readOnly={recovery.state.status === 'observer'}
+                onClosed={setCluePhaseHandoff}
+              />
+            ) : snapshot?.phase === 'clues-active' ? (
+              <RoundSessionFlow
+                readOnly={recovery.state.status === 'observer'}
+                onClosed={setCluePhaseHandoff}
+              />
             ) : activeContent ? (
               <RoleAssignmentFlow
                 content={activeContent}

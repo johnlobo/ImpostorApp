@@ -280,6 +280,86 @@ button:disabled {
   font-size: 1.25rem;
   font-weight: 700;
 }
+
+.round-session-screen {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+.round-session-screen h2,
+.round-session-screen h3,
+.round-session-screen p {
+  margin: 0;
+}
+.round-clock,
+.round-current {
+  display: grid;
+  min-width: 0;
+  gap: 0.5rem;
+  border-block: 1px solid var(--border);
+  padding-block: 1rem;
+  text-align: center;
+}
+.round-clock > strong {
+  font-size: clamp(2.5rem, 10vw, 4rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+.round-current h3 {
+  overflow-wrap: anywhere;
+  font-size: 1.5rem;
+  letter-spacing: 0;
+}
+.round-sequence {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.round-sequence li {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 0.25rem;
+}
+.round-player-current {
+  border-left: 4px solid #176b52;
+  padding-left: 0.75rem !important;
+  font-weight: 700;
+}
+.round-player-complete {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+.round-controls {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+.round-controls > * {
+  flex: 1 1 0;
+}
+.round-confirmation {
+  display: grid;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+.round-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+.round-actions > button {
+  flex: 1 1 0;
+}
+@media (max-width: 360px) {
+  .round-controls,
+  .round-actions {
+    flex-direction: column;
+  }
+}
 .private-role-content {
   display: grid;
   min-height: 12rem;
