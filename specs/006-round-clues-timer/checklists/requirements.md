@@ -6,7 +6,7 @@
 
 ## Content Quality
 
-- [x] No implementation details in behavioural requirements
+- [x] No framework, storage or UI implementation details; deterministic shuffle is an approved domain rule
 - [x] Focused on user value and product outcomes
 - [x] Written for product and engineering stakeholders
 - [x] All mandatory sections completed
@@ -22,7 +22,10 @@
 - [x] Scope is bounded against IMP-5, IMP-7 and IMP-8
 - [x] Dependencies and assumptions are identified
 - [x] Jira epic IMP-6 is referenced
-- [x] The preset discrepancy is resolved by consuming `PreparedGame` unchanged
+- [x] The preset discrepancy is resolved: IMP-6 exposes no duration selector and consumes `PreparedGame` unchanged
+- [x] Public round progress includes current and total rounds without exposing secret configuration
+- [x] Managed clue progress is durable, strictly sequential and idempotent by observed-turn token
+- [x] Successive phases require a strict non-empty participant subset as direct `prepareNext` input
 
 ## Constitution Alignment
 
@@ -32,6 +35,9 @@
 - [x] Timer and command state are offline-first, recoverable and revision-safe
 - [x] Observer mode is public-only and cannot mutate a phase
 - [x] Expiration warns but never causes an implicit transition, vote or navigation
+- [x] Effective expiration is normalized before mutation; non-finite clocks fail and no reset exists
+- [x] Minimal handoff history has exact contiguous identity and cardinality invariants
+- [x] The approved screen inventory requires one CTA and the IMP-10 menu boundary
 - [x] Mobile accessibility, externalized text and 320 px layout are required
 - [x] Domain boundaries prevent IMP-6 from implementing voting or victory rules
 

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `006-round-clues-timer`  
 **Created**: 2026-08-08  
-**Status**: Ready for planning  
+**Status**: Ready for implementation
 **Jira Epic**: `IMP-6`
 
 ## Scope and boundaries
@@ -11,7 +11,7 @@ IMP-6 comienza cuando IMP-5 entrega un `RoundHandoff` despues de que todos los j
 
 IMP-6 no registra votos, no decide empates, no elimina jugadores y no revela roles; esas responsabilidades pertenecen a IMP-7. Tampoco determina ganadores, ofrece el ultimo intento, revela el concepto ni inicia la siguiente ronda; esas responsabilidades pertenecen a IMP-8.
 
-La epica consume sin reinterpretar la configuracion confirmada en `PreparedGame`. En particular, la conversacion temporizada usa sus segundos ya validados (30 a 600, en pasos de 30). Los accesos rapidos de 1, 2, 3, 5 o 10 minutos mencionados en IMP-6 son opciones de presentacion equivalentes dentro de ese rango; no sustituyen los presets ni amplian el contrato aprobado de IMP-3.
+La epica consume sin reinterpretar la configuracion confirmada en `PreparedGame`. En particular, la conversacion temporizada usa sus segundos ya validados (30 a 600, en pasos de 30). IMP-6 no ofrece presets ni permite cambiar la duracion. Los valores de 1, 2, 3, 5 o 10 minutos mencionados en Jira ya pueden llegar como segundos confirmados; ampliar los accesos rapidos de la pantalla de configuracion pertenece a una mejora separada de IMP-3.
 
 ## User Scenarios & Testing
 
@@ -30,6 +30,8 @@ Como grupo que ya conoce sus roles, quiero comenzar la fase de pistas con instru
 3. **Given** `turnOrder: free`, **When** comienza la fase, **Then** se informa que la participacion es libre sin inventar un primer jugador, speaker activo ni una secuencia obligatoria.
 4. **Given** una fase ya confirmada, **When** se repite la accion de inicio, **Then** se recupera el mismo estado sin volver a consumir aleatoriedad ni crear otra fase.
 5. **Given** cualquier orden, **When** se muestra en una superficie compartida, **Then** contiene unicamente nombres, posiciones e instrucciones publicas, nunca concepto, rol o companeros.
+6. **Given** orden roster o random, **When** un jugador completa su pista y el anfitrion avanza, **Then** el turno actual pasa durablemente al siguiente ID de la secuencia y los anteriores quedan marcados como completados.
+7. **Given** el ultimo turno gestionado, **When** se avanza, **Then** la pantalla pasa a conversacion general sin inventar mas participantes; el temporizador, si existe, continua con el mismo deadline.
 
 ---
 
@@ -50,6 +52,7 @@ Como grupo, quiero conversar sin limite o con el tiempo configurado y poder paus
 5. **Given** un temporizador activo, **When** la app queda oculta o se cierra y pasa tiempo real, **Then** al volver se calcula el restante desde el deadline confirmado sin depender de ticks ejecutados en segundo plano.
 6. **Given** que el tiempo llega a cero, **When** se actualiza la superficie compartida, **Then** se muestra un aviso accesible y la fase queda expirada, pero no navega ni vota automaticamente.
 7. **Given** una fase expirada, **When** el anfitrion decide continuar, **Then** debe usar la misma accion explicita de terminar pistas que en una fase libre.
+8. **Given** cualquier estado del temporizador, **When** se muestran sus controles, **Then** no existe una accion para reiniciar o ampliar la duracion confirmada.
 
 ---
 
@@ -64,7 +67,7 @@ Como anfitrion, quiero cerrar manualmente las pistas y avanzar a votacion una so
 **Acceptance Scenarios**:
 
 1. **Given** una fase activa, pausada o expirada, **When** el anfitrion pulsa terminar pistas, **Then** se solicita confirmacion para evitar cierres accidentales.
-2. **Given** la confirmacion aceptada, **When** se guarda el cierre, **Then** la fase deja de aceptar inicio, pausa o reanudacion y entrega a IMP-7 su partida, ronda, numero de fase, participantes elegibles ordenados, instante y motivo de cierre (`manual` o `timer-expired`).
+2. **Given** la confirmacion aceptada, **When** se guarda el cierre, **Then** la fase deja de aceptar inicio, pausa o reanudacion y entrega a IMP-7 su partida, ronda, numero de fase, participantes elegibles en orden canonico de roster, instante y motivo de cierre (`manual` o `timer-expired`).
 3. **Given** una entrega ya confirmada, **When** se repite la accion, **Then** se obtiene el mismo resultado sin una segunda escritura ni una segunda navegacion.
 4. **Given** cualquier entrega hacia IMP-7, **When** se inspeccionan sus datos publicos, **Then** no contiene concepto, categoria, roles, companeros impostores ni votos.
 5. **Given** un fallo de persistencia, **When** se intenta cerrar la fase, **Then** se conserva la fase anterior y se ofrece reintento sin avanzar a IMP-7.
@@ -77,11 +80,11 @@ Como grupo jugando offline, quiero reabrir una fase de pistas conservando orden,
 
 **Why this priority**: La recuperacion es obligatoria para la plataforma, aunque depende de que la fase basica ya exista.
 
-**Independent Test**: Cerrar y reabrir offline una fase en cada estado restaura su proyeccion publica y sus comandos validos sin volver a ejecutar RNG ni extender el tiempo restante.
+**Independent Test**: Cerrar y reabrir offline una fase en cada estado restaura su proyeccion publica y sus comandos validos sin volver a ejecutar RNG ni superar el maximo restante del ultimo comando durable.
 
 **Acceptance Scenarios**:
 
-1. **Given** una fase activa, **When** se reabre offline, **Then** conserva orden y calcula el tiempo desde el deadline durable sin reiniciar el contador.
+1. **Given** una fase activa, **When** se reabre offline, **Then** conserva orden, turno actual y completados, y calcula el tiempo desde el deadline durable sin superar `maximumRemainingSeconds`.
 2. **Given** una fase pausada, **When** se reabre offline, **Then** conserva exactamente el restante confirmado y permanece pausada.
 3. **Given** una fase cerrada, **When** se reabre, **Then** conserva el mismo handoff y no permite volver a mutar la fase.
 4. **Given** un conflicto de revision, **When** se recarga el estado, **Then** prevalece el ultimo snapshot confirmado y la accion obsoleta no se repite automaticamente.
@@ -100,11 +103,11 @@ Como motor de juego, quiero poder iniciar otra fase de pistas con una lista eleg
 
 **Acceptance Scenarios**:
 
-1. **Given** una lista elegible producida tras una resolucion posterior, **When** se prepara la fase siguiente, **Then** solo participan esos IDs y su orden se resuelve segun `PreparedGame`.
+1. **Given** un `NextCluePhaseRequest` producido por IMP-8 tras consumir el resultado de IMP-7 y confirmar que la partida continua, **When** se prepara la fase siguiente, **Then** solo participan esos IDs y su orden se resuelve segun `PreparedGame`.
 2. **Given** orden aleatorio, **When** se inicia otra fase, **Then** confirma una nueva permutacion Fisher-Yates determinista con RNG inyectable sin alterar fases anteriores.
-3. **Given** una lista vacia, duplicada o con IDs ajenos al roster, **When** se intenta preparar, **Then** se rechaza sin persistir estado parcial.
+3. **Given** una lista vacia, duplicada, con IDs ajenos o que no reduce estrictamente los participantes de la fase anterior, **When** se intenta preparar, **Then** se rechaza sin persistir estado parcial.
 4. **Given** una peticion de fase sucesiva, **When** IMP-7 todavia no ha confirmado sus elegibles, **Then** IMP-6 no infiere eliminaciones ni permite crearla.
-5. **Given** cualquier cantidad de fases, **When** se consulta el historial recuperable, **Then** cada fase mantiene identidad, orden, tiempos y cierre propios sin secretos publicos.
+5. **Given** fases sucesivas validas, **When** se consulta el historial recuperable, **Then** cada handoff mantiene identidad y cierre propios, y la cantidad total no puede superar el roster inicial.
 
 ### Edge Cases
 
@@ -118,13 +121,14 @@ Como motor de juego, quiero poder iniciar otra fase de pistas con una lista eleg
 - Una fase sucesiva contiene un solo jugador elegible.
 - Una reapertura encuentra un handoff de IMP-5 valido pero ningun snapshot de fase aun confirmado.
 - El modo observador pierde y recupera conectividad mientras el escritor cambia de pestana.
+- El reloj entrega un valor no finito; un valor anterior a `confirmedAt` queda limitado por el maximo durable y no se trata como prueba de manipulacion.
 
 ## Requirements
 
 ### Functional Requirements
 
 - **FR-001**: IMP-6 MUST consumir un `RoundHandoff` valido de IMP-5 y el `PreparedGame` asociado; MUST NOT volver a asignar roles, sortear contenido ni completar revelaciones.
-- **FR-002**: Cada fase MUST tener identidad estable compuesta por partida, ronda y numero de fase, y MUST persistirse antes de habilitar comandos de ejecucion.
+- **FR-002**: Cada fase MUST tener identidad estable compuesta por partida, ronda y numero de fase. El `RoundHandoff` MUST abrir primero una superficie `ready`; la accion explicita Comenzar pistas MUST persistir la fase y, si corresponde, su deadline antes de habilitar comandos de ejecucion.
 - **FR-003**: Con `turnOrder: roster`, la secuencia MUST conservar el orden de jugadores elegibles del roster y MUST identificar al primero de esa secuencia.
 - **FR-004**: Con `turnOrder: random`, la secuencia MUST ser una permutacion Fisher-Yates completa sin duplicados, creada una sola vez por fase mediante RNG inyectable; su primer elemento MUST ser quien comienza y la secuencia MUST recuperarse sin repetir RNG.
 - **FR-005**: Con `turnOrder: free`, la aplicacion MUST comunicar participacion libre y MUST NOT presentar un primer jugador, speaker activo ni secuencia como obligatorios.
@@ -137,26 +141,38 @@ Como motor de juego, quiero poder iniciar otra fase de pistas con una lista eleg
 - **FR-012**: Llegar a cero MUST producir un estado expirado y un aviso accesible; MUST NOT cerrar la fase, navegar ni iniciar una votacion automaticamente.
 - **FR-013**: Terminar pistas MUST ser una accion explicita disponible para conversacion libre y para temporizador activo, pausado o expirado, y MUST requerir confirmacion.
 - **FR-014**: El cierre confirmado MUST ser durable e idempotente y MUST bloquear mutaciones posteriores de esa fase.
-- **FR-015**: El handoff hacia IMP-7 MUST contener solo partida, ronda, numero de fase, IDs elegibles ordenados, instante y motivo de cierre; MUST NOT contener ningun secreto ni voto.
+- **FR-015**: El handoff hacia IMP-7 MUST contener solo partida, ronda, numero de fase, IDs elegibles en el orden canonico del roster, instante y motivo de cierre; un cierre persistido desde estado expirado MUST usar `timer-expired` y cualquier otro MUST usar `manual`. El handoff MUST NOT interpretar el orden canonico como turnos en modo `free` y MUST NOT contener ningun secreto ni voto.
 - **FR-016**: Un fallo de persistencia MUST conservar el ultimo estado confirmado y MUST NOT emitir un handoff hasta que el cierre sea durable.
 - **FR-017**: Inicio, pausa, reanudacion y cierre MUST respetar revision optimista y permiso de escritor; un observador MUST ser estrictamente de solo lectura.
-- **FR-018**: La recuperacion offline MUST restaurar orden, estado, restante o deadline y handoff sin repetir RNG ni extender el tiempo confirmado.
-- **FR-019**: Datos futuros, incompatibles o parciales MUST activar modo seguro sin borrado automatico y sin secretos en mensajes, URL, logs o telemetria.
-- **FR-020**: IMP-6 MUST aceptar para una fase sucesiva un numero de fase y IDs elegibles ya resueltos externamente, validandolos contra el roster sin inferir eliminaciones.
-- **FR-021**: Una fase sucesiva invalida MUST fallar sin escritura parcial; una valida MUST conservar snapshots anteriores y resolver su propio orden y temporizador.
+- **FR-018**: La recuperacion offline MUST restaurar orden, turno actual, completados, estado, restante o deadline y handoff sin repetir RNG. El restante calculado MUST estar limitado por `maximumRemainingSeconds` del ultimo comando durable; un ajuste hacia atras del reloj civil puede recuperar tiempo observado dentro de ese limite y no puede distinguirse de forma fiable tras reload.
+- **FR-019**: Datos futuros, incompatibles o parciales MUST activar modo seguro sin borrado automatico. URL, navigation state, `PublicPlatformError`, consola capturada y payloads publicos serializados MUST excluir secretos; IMP-6 MUST NOT introducir telemetria.
+- **FR-020**: IMP-6 MUST aceptar para una fase sucesiva un `NextCluePhaseRequest` emitido por IMP-8 despues de consumir el resultado de IMP-7 y confirmar que no existe victoria; MUST validar numero de fase e IDs elegibles contra el roster sin inferir eliminaciones. Los elegibles MUST formar un subconjunto estricto de los participantes anteriores, con al menos un ID menos.
+- **FR-021**: Una fase sucesiva invalida MUST fallar sin escritura parcial; una valida MUST conservar
+  fase activa, handoffs cerrados minimos y el `ResolutionLedger` versionado de IMP-8 como payload
+  opaco hasta el siguiente consumidor, sin proyectarlo ni retener snapshots temporales completos.
 - **FR-022**: IMP-6 MUST NOT registrar votos, resolver empates, elegir eliminados ni excluir candidatos por cuenta propia; todo ello pertenece a IMP-7.
 - **FR-023**: IMP-6 MUST NOT revelar roles o concepto, evaluar victoria, ejecutar ultimo intento, iniciar revancha ni decidir la siguiente ronda; todo ello pertenece a IMP-8.
-- **FR-024**: Todos los comandos MUST ser idempotentes ante doble pulsacion y MUST resolver conflictos recargando el ultimo snapshot sin repetir automaticamente la intencion obsoleta.
+- **FR-024**: Todos los comandos MUST ser idempotentes ante doble pulsacion. Repetir pausa sobre una fase pausada o reanudacion sobre una fase activa MUST ser no-op sin nueva revision; un comando incompatible MUST devolver un issue publico tipado y un conflicto stale MUST recargar el ultimo snapshot sin repetir automaticamente la intencion obsoleta.
 - **FR-025**: Todos los textos visibles MUST estar externalizados y la interfaz MUST funcionar en vertical a 320 px, con foco visible, controles tactiles y anuncios accesibles del temporizador.
 - **FR-026**: La fase completa MUST funcionar offline tras la primera carga y MUST mantener el presupuesto de bundle vigente.
+- **FR-027**: En orden roster o random, la fase MUST persistir `currentTurnIndex` y
+  `completedCluePlayerIds` desde ready; avanzar MUST seguir estrictamente la secuencia y usar el
+  indice observado como token idempotente, nunca como destino seleccionable. En free ambos campos
+  MUST permanecer neutrales.
+- **FR-028**: La experiencia MUST incluir estados compartidos diferenciados `ready`, pistas activas, conversacion general, temporizador pausado, expirado, confirmacion de cierre, error/retry y cerrado. La cabecera MUST mostrar ronda actual/total; la zona principal MUST mostrar politica de orden, turno actual o instruccion libre, secuencia publica y reloj cuando aplique; el CTA inferior MUST reflejar la unica accion primaria valida.
+- **FR-029**: IMP-6 MUST exponer una capability/slot publica para el menu de partida en superficies
+  compartidas y MUST ocultarla en cualquier superficie privada. IMP-10 es el unico owner que
+  renderiza control, dialogos y comandos de pausa/continuidad/abandono; IMP-6 MUST NOT duplicarlos ni
+  implementar un reset del temporizador.
 
 ### Key Entities
 
-- **CluePhaseSnapshot**: estado versionado y durable de una fase; referencia la partida y ronda, contiene elegibles y orden publicos, modo de conversacion, estado temporal, revision y cierre.
+- **CluePhaseSnapshot**: estado versionado y durable de una fase; referencia la partida y ronda, contiene elegibles, orden publico, turno actual, pistas completadas, modo de conversacion, estado temporal, revision y cierre.
 - **TurnSequence**: proyeccion publica del orden `roster` o `random`, o participacion `free` sin secuencia obligatoria.
 - **ConversationClock**: estado `untimed`, `running`, `paused` o `expired`, representado por deadline o restante durable segun corresponda.
-- **CluePhaseHandoff**: entrega publica e idempotente hacia IMP-7 despues del cierre confirmado.
-- **EligibleRoster**: subconjunto ordenado de IDs del roster, producido inicialmente por IMP-5 y en fases sucesivas por la resolucion externa de IMP-7/IMP-8.
+- **CluePhaseHandoff**: entrega publica e idempotente hacia IMP-7 despues del cierre confirmado; sus IDs conservan el orden canonico del roster, separado de cualquier orden de turnos.
+- **EligibleRoster**: subconjunto canonico de IDs; la primera fase usa el roster completo de `PreparedGame` y las fases sucesivas usan el `NextCluePhaseRequest` autorizado por IMP-8.
+- **NextCluePhaseRequest**: solicitud publica de IMP-8 con partida, ronda, siguiente numero de fase e IDs elegibles, emitida solo despues de resolver IMP-7 y descartar victoria.
 
 ## Success Criteria
 
@@ -168,15 +184,31 @@ Como motor de juego, quiero poder iniciar otra fase de pistas con una lista eleg
 - **SC-004**: Cero expiraciones causan navegacion o votacion automatica en la matriz de pruebas.
 - **SC-005**: El 100 % de dobles comandos y conflictos conserva un unico estado confirmado y un unico handoff.
 - **SC-006**: Cero conceptos, categorias, roles, companeros o votos aparecen en superficies compartidas, handoffs, URL, logs o errores publicos.
-- **SC-007**: El 100 % de reaperturas offline restaura fase y reloj sin repetir RNG ni ampliar el tiempo restante.
+- **SC-007**: El 100 % de reaperturas offline restaura fase y reloj sin repetir RNG y el restante
+  nunca supera `maximumRemainingSeconds` del ultimo comando durable.
 - **SC-008**: El 100 % de listas sucesivas invalidas se rechaza sin escritura parcial y las validas no alteran fases anteriores.
 - **SC-009**: Todos los recorridos pasan controles automatizados de teclado, semantica, anuncios de tiempo, contraste y ausencia de overflow a 320 px.
+- **SC-010**: El 100 % de recorridos roster/random avanza por la secuencia confirmada sin saltos y recupera turno/completados; free nunca muestra un turno actual.
+- **SC-011**: Cero pantallas de IMP-6 ofrecen reiniciar tiempo, navegar a votacion antes del cierre durable o abrir el menu de partida dentro de una vista privada.
 
 ## Assumptions and dependencies
 
 - IMP-5 entrega un `RoundHandoff` solo despues de N/N revelaciones y conserva el snapshot secreto; IMP-6 trabaja exclusivamente con proyecciones publicas.
 - `PreparedGame` de IMP-3 sigue siendo la fuente autoritativa de `conversation` y `turnOrder`.
-- Los minutos enumerados en la descripcion de IMP-6 son accesos visuales; 1, 2, 3, 5 y 10 minutos equivalen a valores ya validos de 60, 120, 180, 300 y 600 segundos. Anadir o cambiar presets en la pantalla de configuracion requiere una mejora separada de IMP-3.
-- El reloj puede ajustarse; la implementacion debe impedir que un salto hacia atras aumente el restante por encima del ultimo valor durable y limitar cualquier calculo al rango valido.
-- IMP-7 consume `CluePhaseHandoff` para votar y determinar elegibles posteriores. IMP-8 decide si corresponde otra fase, una nueva ronda o el final; IMP-6 solo prepara una fase cuando recibe una lista elegible explicita.
-- No existen hijos Jira de IMP-6 durante discovery; el backlog se generara desde estas historias despues de aprobar la especificacion.
+- IMP-6 no presenta presets ni modifica la duracion. Los valores de 1, 2, 3, 5 y 10 minutos equivalen a segundos ya validos; anadir accesos rapidos en configuracion requiere una mejora separada de IMP-3.
+- El reloj puede ajustarse: un salto adelante puede expirar la fase y uno hacia atras queda limitado por `maximumRemainingSeconds`, aunque puede recuperar tiempo observado dentro de ese maximo tras reload. Solo un valor no finito activa `invalid-clock`. El dominio se prueba con reloj inyectable de forma exacta; la UI admite una tolerancia visual maxima de un segundo.
+- IMP-7 consume `CluePhaseHandoff` para votar. IMP-8 consume su resultado, decide si la ronda debe
+  continuar y, solo entonces, puede emitir `NextCluePhaseRequest`; IMP-6 no prepara una fase sucesiva
+  sin esa solicitud explicita.
+- No existe telemetria integrada. La auditoria de privacidad inspecciona URL, navigation state, `PublicPlatformError`, consola capturada y payloads publicos serializados.
+- Jira contiene IMP-38..IMP-42 para US1..US5 e IMP-43 para validacion/entrega. FR-006, FR-017..FR-019 y FR-024..FR-029 son gates transversales aunque tengan una historia primaria.
+
+## Screen inventory
+
+- **Round ready**: ronda actual/total, politica de orden, primer jugador o instruccion libre, secuencia publica y CTA `Comenzar pistas`; ningun reloj corre antes del commit.
+- **Managed clues**: turno actual, completados, siguiente accion, secuencia no interactiva como atajo y CTA `Siguiente jugador`; tras el ultimo turno pasa a conversacion general.
+- **Free clues / general discussion**: instruccion compartida sin speaker activo y CTA `Terminar pistas`.
+- **Timed conversation**: reloj grande con pausa/reanudacion segun estado; no ofrece reset. Expiracion muestra aviso y conserva `Terminar pistas` como accion explicita.
+- **Close confirmation**: explica que se avanzara a votacion; cancelar no escribe y confirmar persiste antes del handoff.
+- **Observer / recovery / error**: misma proyeccion publica, sin comandos en observer; retry recarga sin replay y safe mode preserva datos.
+- **Game menu integration**: acceso solo en pantallas compartidas. Su sheet de pausa, continuidad y abandono se especifica en IMP-10.
