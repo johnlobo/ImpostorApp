@@ -6,18 +6,15 @@ import { defineConfig } from 'vitest/config'
 const DEV_PORT = 5175
 const PROXY_BASE = `/proxy/${DEV_PORT}`
 
-export default defineConfig(({ command }) => {
-  // Dev server runs behind the code-server reverse proxy; vitest resolves
-  // this same config with command 'serve' too, so it must be excluded
-  // explicitly or tests would inherit the proxy base and middleware.
-  const isDevServer = command === 'serve' && process.env.VITEST === undefined
+export default defineConfig(({ command, isPreview }) => {
+  // Dev server runs behind the code-server reverse proxy; vitest and
+  // `vite preview` both resolve this same config with command 'serve' too,
+  // so they must be excluded explicitly or they'd inherit the proxy base
+  // and middleware, breaking asset paths in the production preview used by CI.
+  const isDevServer = command === 'serve' && !isPreview && process.env.VITEST === undefined
 
   return {
-    base: isDevServer
-      ? `${PROXY_BASE}/`
-      : process.env.GITHUB_ACTIONS
-        ? '/ImpostorApp/'
-        : '/',
+    base: isDevServer ? `${PROXY_BASE}/` : process.env.GITHUB_ACTIONS ? '/ImpostorApp/' : '/',
     server: {
       host: '0.0.0.0',
       port: DEV_PORT,
