@@ -77,7 +77,7 @@
 - [x] T046 [IMP-43] Añadir textos en `src/i18n/es.ts` y estilos en `src/styles/global.css` (FR-025, FR-028).
 - [x] T047 [P] [IMP-43] Crear `tests/e2e/round-session.spec.ts` para roster/random/free/timer/close/reload/offline (SC-001..008, SC-010..011).
 - [x] T048 [P] [IMP-43] Crear `tests/accessibility/round-session.spec.ts` para teclado/axe/anuncios/320px/menu (SC-009, SC-011).
-- [ ] T049 [IMP-43] Ejecutar `specs/006-round-clues-timer/quickstart.md` y gates; registrar evidencia en `specs/006-round-clues-timer/checklists/implementation.md`.
+- [x] T049 [IMP-43] Ejecutar `specs/006-round-clues-timer/quickstart.md` y gates; registrar evidencia en `specs/006-round-clues-timer/checklists/implementation.md`.
 - [ ] T050 [IMP-43] Publicar PR, validar CI/Pages y reconciliar IMP-6/IMP-38..43 en Jira.
 
 ## Dependencies and parallel work
