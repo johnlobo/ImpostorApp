@@ -48,9 +48,18 @@ test.describe('round session accessibility', () => {
     await page.keyboard.press('Enter')
     await expectAccessible(page)
 
-    for (let remaining = names.length; remaining > 0; remaining -= 1) {
-      await page.getByRole('button', { name: 'Siguiente jugador' }).focus()
+    for (let index = 0; index < names.length; index += 1) {
+      const next = page.getByRole('button', { name: 'Siguiente jugador' })
+      await expect(next).toBeEnabled()
+      await next.focus()
       await page.keyboard.press('Enter')
+      if (index < names.length - 1) {
+        await expect(page.getByLabel('Fase compartida de pistas')).toContainText(names[index + 1]!)
+      } else {
+        await expect(page.getByLabel('Fase compartida de pistas')).toContainText(
+          'Conversación general',
+        )
+      }
     }
     await expectAccessible(page)
 

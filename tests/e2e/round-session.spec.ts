@@ -27,7 +27,10 @@ async function openRound(page: Page, setup: RoundSetup = {}): Promise<void> {
       random: 'Aleatorio por ronda',
       free: 'Libre',
     } as const
-    await page.getByRole('radio', { name: labels[setup.turnOrder], exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Orden de participación' })
+      .getByRole('radio', { name: labels[setup.turnOrder], exact: true })
+      .check()
   }
   await page.getByRole('button', { name: 'Revisar configuración' }).click()
   await page.getByRole('button', { name: 'Confirmar partida' }).click()
